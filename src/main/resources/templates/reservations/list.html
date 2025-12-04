@@ -4,66 +4,68 @@
     <meta charset="UTF-8">
     <title>예약 목록</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
+        /* 메인 컨테이너 스타일 (index.html 참고) */
+        .main-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; min-height: 600px; font-family: 'Noto Sans KR', sans-serif;}
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         th { background-color: #f4f4f4; }
-        .btn-cancel { background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+        .btn-cancel { background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;}
         .btn-new { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;}
-
         a.detail-link { color: #007bff; text-decoration: none; font-weight: bold; }
         a.detail-link:hover { text-decoration: underline; color: #0056b3; }
     </style>
 </head>
 <body>
 
-<h2>📋 예약 현황판</h2>
+<div th:replace="layout/header :: headerFragment"></div>
 
-<a href="/reservations/new" class="btn-new">➕ 새 예약 등록</a>
+<main class="main-container">
+    <h2>📋 예약 현황판</h2>
 
-<table>
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>예약 일시</th>
-        <th>환자명</th>
-        <th>담당 의사</th>
-        <th>상태</th>
-        <th>관리</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${#lists.isEmpty(reservations)}">
-        <td colspan="6">등록된 예약이 없습니다.</td>
-    </tr>
+    <a href="/reservations/new" class="btn-new">➕ 새 예약 등록</a>
 
-    <tr th:each="appt : ${reservations}">
-        <td>
-            <a th:href="@{/reservations/{id}(id=${appt.reservationNum})}"
-               th:text="${appt.reservationNum}" class="detail-link">1</a>
-        </td>
+    <table>
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>예약 일시</th>
+            <th>환자명</th>
+            <th>담당 의사</th>
+            <th>상태</th>
+            <th>관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(reservations)}">
+            <td colspan="6">등록된 예약이 없습니다.</td>
+        </tr>
 
-        <td th:text="${#temporals.format(appt.reservationDate, 'yyyy-MM-dd HH:mm')}">2023-12-05 14:00</td>
+        <tr th:each="appt : ${reservations}">
+            <td>
+                <a th:href="@{/reservations/{id}(id=${appt.reservationNum})}"
+                   th:text="${appt.reservationNum}" class="detail-link">1</a>
+            </td>
+            <td th:text="${#temporals.format(appt.reservationDate, 'yyyy-MM-dd HH:mm')}">2023-12-05 14:00</td>
+            <td>
+                <a th:href="@{/reservations/{id}(id=${appt.reservationNum})}"
+                   th:text="${appt.patientName}" class="detail-link">홍길동</a>
+            </td>
+            <td th:text="${appt.doctorName}">김닥터</td>
+            <td th:text="${appt.statusDescription}" style="font-weight: bold;">예약 됨</td>
+            <td>
+                <form th:if="${appt.status == 0}"
+                      th:action="@{/reservations/{id}/cancel(id=${appt.reservationNum})}"
+                      method="post" onsubmit="return confirm('정말 취소하시겠습니까?');">
+                    <button type="submit" class="btn-cancel">취소</button>
+                </form>
+                <span th:if="${appt.status == 2}" style="color: gray;">(취소됨)</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
 
-        <td>
-            <a th:href="@{/reservations/{id}(id=${appt.reservationNum})}"
-               th:text="${appt.patientName}" class="detail-link">홍길동</a>
-        </td>
-
-        <td th:text="${appt.doctorName}">김닥터</td>
-        <td th:text="${appt.statusDescription}" style="font-weight: bold;">예약 됨</td>
-        <td>
-            <form th:if="${appt.status == 0}"
-                  th:action="@{/reservations/{id}/cancel(id=${appt.reservationNum})}"
-                  method="post" onsubmit="return confirm('정말 취소하시겠습니까?');">
-                <button type="submit" class="btn-cancel">취소</button>
-            </form>
-
-            <span th:if="${appt.status == 2}" style="color: gray;">(취소됨)</span>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
 </html>
