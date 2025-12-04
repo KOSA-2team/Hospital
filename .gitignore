@@ -1,1 +1,6 @@
+# SQL
 /hospital_db.sql
+/dummy_data.sql
+
+# Config Package
+src/main/java/com/kosa2/hospital/config/
