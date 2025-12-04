@@ -49,6 +49,6 @@ public class LoginController {
         if (session != null) {
             session.invalidate();
         }
-        return "redirect:/login";
+        return "redirect:/login/loginForm";
     }
 }

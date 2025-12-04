@@ -3,8 +3,10 @@
 <body>
 
 <h2>의료진 정보 수정</h2>
-
-<form th:action="@{/staff/edit}" method="post" th:object="${staffDto}">
+<script th:if="${param.edited}" th:inline="javascript">
+    alert('수정되었습니다.');
+</script>
+<form th:action="@{/doctors/edit}" method="post" th:object="${staffDto}">
 
   <input type="hidden" th:field="*{medicalNum}">
 
