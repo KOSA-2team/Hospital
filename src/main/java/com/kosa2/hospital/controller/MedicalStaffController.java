@@ -16,36 +16,36 @@ import static com.kosa2.hospital.interceptor.LoginInterceptor.LOGIN_STAFF_SESSIO
 
 
 @Controller
-@RequestMapping("/staff")
+@RequestMapping("/doctors")
 @RequiredArgsConstructor
 public class MedicalStaffController {
 
     private final MedicalStaffService medicalStaffService;
 
     // 회원가입 폼
-    @GetMapping("/join")
-    public String joinForm(Model model) {
+    @GetMapping("/new")
+    public String Form(Model model) {
         model.addAttribute("MedicalStaffDto", new MedicalStaffDto());
-        return "login/joinForm";
+        return "doctors/form";
     }
 
     // 회원가입 처리
-    @PostMapping("/join")
+    @PostMapping("/new")
     public String join(@ModelAttribute("MedicalStaffDto") MedicalStaffDto dto) {
         medicalStaffService.join(dto);
         return "redirect:/login/loginForm";
     }
 
     // 목록
-    @GetMapping("/list")
+    @GetMapping
     public String list(Model model) {
         List<MedicalStaff> staffList = medicalStaffService.findAll();
         model.addAttribute("staffList", staffList);
-        return "staff/listForm";
+        return "doctors/list";
     }
 
     // 수정 폼
-    @GetMapping("/edit/{medicalNum}")
+    @GetMapping("/{medicalNum}/edit")
     public String editForm(@PathVariable Long medicalNum, Model model) {
         MedicalStaff staff = medicalStaffService.findById(medicalNum);
 
@@ -56,21 +56,20 @@ public class MedicalStaffController {
         dto.setSpecialty(staff.getSpecialty());
         dto.setMPhone(staff.getMphone());
         dto.setEmail(staff.getEmail());
-        // pwd, power 는 화면에서 필요할 때만 입력
 
         model.addAttribute("staffDto", dto);
-        return "staff/editForm";
+        return "doctors/edit";
     }
 
-    // 수정 처리 (프로필 + 비밀번호 옵션 변경)
+    // 수정 처리 (프로필 + 비밀번호 변경)
     @PostMapping("/edit")
     public String edit(@ModelAttribute("staffDto") MedicalStaffDto dto) {
         medicalStaffService.updateProfile(dto);
-        return "redirect:/staff/list";
+        return "redirect:/doctors?edited=true";
     }
 
     // 권한 변경 폼 (관리자만, 인터셉터에서 막힘)
-    @GetMapping("/authority/{medicalNum}")
+    @GetMapping("/{medicalNum}/authority")
     public String authorityForm(@PathVariable Long medicalNum, Model model) {
         MedicalStaff staff = medicalStaffService.findById(medicalNum);
 
@@ -82,25 +81,25 @@ public class MedicalStaffController {
 
         model.addAttribute("staffDto", dto);
         model.addAttribute("staff", staff);
-        return "staff/authorityForm";
+        return "doctors/authority";
     }
 
     // 권한 변경 처리
     @PostMapping("/authority")
     public String authority(@ModelAttribute("staffDto") MedicalStaffDto dto) {
         medicalStaffService.updatePower(dto);
-        return "redirect:/staff/list";
+        return "redirect:/doctors";
     }
 
     // 삭제 (관리자만, 인터셉터 + 컨트롤러 이중 방어)
-    @PostMapping("/delete/{medicalNum}")
+    @PostMapping("/{medicalNum}/delete")
     public String delete(@PathVariable Long medicalNum, HttpSession session) {
         MedicalStaff login = (MedicalStaff) session.getAttribute(LOGIN_STAFF_SESSION_KEY);
         if (login == null || login.getPower() <= Grade.ADMIN) {
-            return "redirect:/staff/list?error=forbidden";
+            return "redirect:/doctors?error=forbidden";
         }
         medicalStaffService.delete(medicalNum);
-        return "redirect:/staff/list";
+        return "redirect:/doctors";
     }
 }
 

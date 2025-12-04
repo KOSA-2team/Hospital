@@ -5,7 +5,7 @@
 <div class="form-container">
     <h2>🏥 신규 의료진 계정 등록</h2>
 
-    <form th:action="@{/staff/join}" method="post" th:object="${MedicalStaffDto}">
+    <form th:action="@{/doctors/new}" method="post" th:object="${MedicalStaffDto}">
 
         <div class="form-group">
             <label for="medicalId" class="required">사용자 ID (로그인 ID):</label>

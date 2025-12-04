@@ -15,8 +15,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")           // 전체 경로에 대해 인터셉터 적용
                 .excludePathPatterns(             // 예외(로그인 필요 없는 경로)
                         "/login",
-                        "/staff",
-                        "/join",
+                        "/",
+                        "/doctors/new",
+                        "/new",
                         "/logout",
                         "/css/**",
                         "/js/**",

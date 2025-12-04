@@ -87,14 +87,23 @@
         </ul>
 
         <div class="user-info">
+
             <th:block th:if="${session.loginDoctor != null}">
                 <span th:text="|${session.loginDoctor.mname}님|"></span>
-                <a href="/logout" class="btn-auth">로그아웃</a>
+
+                <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;"></form>
+
+                <a href="#" class="btn-auth"
+                   onclick="document.getElementById('logoutForm').submit(); return false;">
+                    로그아웃
+                </a>
             </th:block>
 
+            <!-- 로그인 안 됐을 때 -->
             <th:block th:unless="${session.loginDoctor != null}">
                 <a href="/login" class="btn-auth">로그인</a>
             </th:block>
+
         </div>
     </nav>
 </header>

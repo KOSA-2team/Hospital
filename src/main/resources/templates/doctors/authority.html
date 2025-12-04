@@ -3,7 +3,7 @@
 <body>
 <h2>권한 변경</h2>
 
-<form th:action="@{/staff/authority}" method="post" th:object="${staffDto}">
+<form th:action="@{/doctors/authority}" method="post" th:object="${staffDto}">
 
     <input type="hidden" th:field="*{medicalNum}">
     <input type="hidden" th:field="*{medicalId}">
