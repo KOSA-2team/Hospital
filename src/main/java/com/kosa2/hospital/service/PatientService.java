@@ -2,10 +2,13 @@ package com.kosa2.hospital.service;
 
 import com.kosa2.hospital.dao.PatientDao;
 import com.kosa2.hospital.dto.PatientDto;
+import com.kosa2.hospital.model.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -13,32 +16,46 @@ public class PatientService {
 
     private final PatientDao patientDao;
 
-    // 환자 목록 조회 (이름 or 전화번호로 검색 가능)
+    // 목록 조회
     public List<PatientDto> getPatientList(String keyword) {
-        return patientDao.findAll(keyword);
+        List<Patient> models = patientDao.findAll(keyword);
+        
+        return models.stream()
+                .map(PatientDto::from) 
+                .collect(Collectors.toList());
     }
 
-    // 환자 상세 조회
+    // 상세 조회
     public PatientDto getPatientDetail(int id) {
-        return patientDao.findById(id);
+        Patient model = patientDao.findById(id);
+        if (model == null) return null;
+        
+        return PatientDto.from(model);
     }
 
-    // 환자 등록
+    // 등록
     public void registerPatient(PatientDto dto) {
-        patientDao.insert(dto);
+        patientDao.insert(dto.toModel());
     }
 
-    // 환자 수정
+    // 수정
     public void updatePatient(PatientDto dto) {
-        patientDao.update(dto);
+        patientDao.update(dto.toModel());
     }
 
-    // 환자 삭제
+    // 삭제 (처방 → 진료 → 예약 → 환자)
+    @Transactional
     public void deletePatient(int id) {
-        Integer cnt = patientDao.countReservationsByPatient(id);
-        if (cnt != null && cnt > 0) {
-            throw new IllegalStateException("환자에게 연결된 예약이 있어 삭제할 수 없습니다.");
-        }
+        // 1. 처방 삭제
+        patientDao.deletePrescriptionsByPatientId(id);
+
+        // 2. 진료 삭제
+        patientDao.deleteTreatmentsByPatientId(id);
+
+        // 3. 예약 삭제
+        patientDao.deleteReservationsByPatientId(id);
+
+        // 4. 환자 삭제
         patientDao.delete(id);
     }
 }

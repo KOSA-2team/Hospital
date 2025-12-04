@@ -1,19 +1,11 @@
 package com.kosa2.hospital.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.kosa2.hospital.dto.PatientDto;
 import com.kosa2.hospital.service.PatientService;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-
-
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/patients")
@@ -21,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class PatientController {
 
     private final PatientService patientService;
-    
-    // 환자 목록 페이지, 이름 or 전화번호로 검색 가능
+
+    // 목록
     @GetMapping
     public String list(@RequestParam(required = false) String keyword, Model model) {
         model.addAttribute("list", patientService.getPatientList(keyword));
@@ -30,50 +22,45 @@ public class PatientController {
         return "patients/list";
     }
 
-    // 환자 상세 페이지
+    // 상세
     @GetMapping("/{id}")
     public String details(@PathVariable int id, Model model) {
         model.addAttribute("patient", patientService.getPatientDetail(id));
         return "patients/detail";
     }
 
-    // 환자 등록 페이지
+    // 등록 폼
     @GetMapping("/new")
     public String newForm() {
         return "patients/insert-form";
     }
 
-    // 환자 등록 처리
+    // 등록 처리
     @PostMapping("/new")
     public String insert(PatientDto dto) {
         patientService.registerPatient(dto);
-        return "redirect:/patients/";
+        return "redirect:/patients"; // 경로 수정: /patients/ -> /patients
     }
-    
-    // 환자 수정 페이지
+
+    // 수정 폼
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable int id, Model model) {
         model.addAttribute("patient", patientService.getPatientDetail(id));
         return "patients/edit-form";
     }
 
-    // 환자 수정 처리
+    // 수정 처리
     @PostMapping("/{id}/edit")
     public String update(@PathVariable int id, PatientDto dto) {
         dto.setPatient_num(id);
         patientService.updatePatient(dto);
-        return "redirect:/patients/{id}";
+        return "redirect:/patients/" + id;
     }
-    
-    // 환자 삭제 처리
+
+    // 삭제 처리
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable int id) {
-        try {
-            patientService.deletePatient(id);
-            return "redirect:/patients/";
-        } catch (IllegalStateException e) {
-            // 예약이 존재해 삭제 불가
-            return "redirect:/patients/?error=hasReservations";
-        }
+        patientService.deletePatient(id);
+        return "redirect:/patients";
     }
 }
