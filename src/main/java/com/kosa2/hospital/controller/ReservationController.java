@@ -1,7 +1,9 @@
 package com.kosa2.hospital.controller;
 
 import com.kosa2.hospital.dto.ReservationDto;
+import com.kosa2.hospital.service.MedicalStaffService; // ✨ 팀원이 만든 서비스 임포트
 import com.kosa2.hospital.service.ReservationService;
+import com.kosa2.hospital.model.MedicalStaff;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/reservations") // ✨ 기본 URL 변경됨
+@RequestMapping("/reservations")
 @RequiredArgsConstructor
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final MedicalStaffService medicalStaffService;
 
     // private final PatientService patientService;
-    // private final MedicalService medicalService;
 
     // 1. 예약 목록 조회
     @GetMapping
@@ -31,22 +33,15 @@ public class ReservationController {
     // 2. 예약 등록 폼
     @GetMapping("/new")
     public String form(Model model) {
-        // '가짜 데이터' (드롭다운 테스트용)
         List<Map<String, Object>> dummyPatients = new ArrayList<>();
         dummyPatients.add(Map.of("patientNum", 1L, "name", "임시환자_김철수"));
         dummyPatients.add(Map.of("patientNum", 2L, "name", "임시환자_이영희"));
-
-        List<Map<String, Object>> dummyDoctors = new ArrayList<>();
-        dummyDoctors.add(Map.of("medicalNum", 1L, "mname", "임시의사_허준"));
-        dummyDoctors.add(Map.of("medicalNum", 2L, "mname", "임시의사_장금이"));
-
         model.addAttribute("patients", dummyPatients);
-        model.addAttribute("doctors", dummyDoctors);
 
-        // model.addAttribute("patients", patientService.getAllPatients());
-        // model.addAttribute("doctors", medicalService.getAllDoctors());
+        List<MedicalStaff> realDoctors = medicalStaffService.findAll();
+        model.addAttribute("doctors", realDoctors);
 
-        return "reservations/form"; // ✨ 뷰 폴더 위치 변경
+        return "reservations/form";
     }
 
     // 3. 예약 등록 처리

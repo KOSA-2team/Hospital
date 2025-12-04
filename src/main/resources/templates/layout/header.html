@@ -82,14 +82,16 @@
 
         <ul class="menu-list">
             <li><a href="/doctors">의료진 정보</a></li>
-            <li><a href="/appointments">예약 관리</a></li>
+            <li><a href="/reservations">예약 관리</a></li>
             <li><a href="/patients">환자 관리</a></li>
         </ul>
 
         <div class="user-info">
             <th:block th:if="${session.loginDoctor != null}">
                 <span th:text="|${session.loginDoctor.mname}님|"></span>
-                <a href="/logout" class="btn-auth">로그아웃</a>
+                <form action="/logout" method="post" style="display:inline;">
+                    <button type="submit" class="btn-auth" style="cursor:pointer;">로그아웃</button>
+                </form>
             </th:block>
 
             <th:block th:unless="${session.loginDoctor != null}">
