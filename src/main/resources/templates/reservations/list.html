@@ -10,13 +10,16 @@
         th { background-color: #f4f4f4; }
         .btn-cancel { background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; }
         .btn-new { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;}
+
+        a.detail-link { color: #007bff; text-decoration: none; font-weight: bold; }
+        a.detail-link:hover { text-decoration: underline; color: #0056b3; }
     </style>
 </head>
 <body>
 
 <h2>📋 예약 현황판</h2>
 
-<a href="/reservations/new" class="btn-new"> 새 예약 등록</a>
+<a href="/reservations/new" class="btn-new">➕ 새 예약 등록</a>
 
 <table>
     <thead>
@@ -35,9 +38,18 @@
     </tr>
 
     <tr th:each="appt : ${reservations}">
-        <td th:text="${appt.reservationNum}">1</td>
+        <td>
+            <a th:href="@{/reservations/{id}(id=${appt.reservationNum})}"
+               th:text="${appt.reservationNum}" class="detail-link">1</a>
+        </td>
+
         <td th:text="${#temporals.format(appt.reservationDate, 'yyyy-MM-dd HH:mm')}">2023-12-05 14:00</td>
-        <td th:text="${appt.patientName}">홍길동</td>
+
+        <td>
+            <a th:href="@{/reservations/{id}(id=${appt.reservationNum})}"
+               th:text="${appt.patientName}" class="detail-link">홍길동</a>
+        </td>
+
         <td th:text="${appt.doctorName}">김닥터</td>
         <td th:text="${appt.statusDescription}" style="font-weight: bold;">예약 됨</td>
         <td>

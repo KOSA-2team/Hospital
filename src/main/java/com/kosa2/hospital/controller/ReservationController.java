@@ -66,4 +66,12 @@ public class ReservationController {
         reservationService.cancelReservation(id);
         return "redirect:/reservations";
     }
+
+    // 5. 예약 상세
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        ReservationDto dto = reservationService.getReservation(id);
+        model.addAttribute("reservations", dto);
+        return "reservations/detail";
+    }
 }
