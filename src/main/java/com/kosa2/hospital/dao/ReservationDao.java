@@ -72,4 +72,31 @@ public class ReservationDao {
 
         jdbcTemplate.update(sql, ReservationStatus.CANCELED.getCode(), id);
     }
+
+    // 5. 예약 상세 조회
+    public ReservationDto findById(Long id) {
+        String sql = """
+            SELECT r.reservation_num, r.reservation, r.status,
+                   r.patient_num, r.medical_num,
+                   p.name AS patient_name,
+                   m.mname AS doctor_name
+            FROM Reservation r
+            JOIN patient p ON r.patient_num = p.patient_num
+            JOIN medical_staff m ON r.medical_num = m.medical_num
+            WHERE r.reservation_num = ?
+        """;
+
+        // 결과가 없으면 예외를 던지거나 null 반환
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            ReservationDto dto = new ReservationDto();
+            dto.setReservationNum(rs.getLong("reservation_num"));
+            dto.setReservationDate(rs.getTimestamp("reservation").toLocalDateTime());
+            dto.setStatus(rs.getInt("status"));
+            dto.setPatientNum(rs.getLong("patient_num"));
+            dto.setMedicalNum(rs.getLong("medical_num"));
+            dto.setPatientName(rs.getString("patient_name"));
+            dto.setDoctorName(rs.getString("doctor_name"));
+            return dto;
+        }, id);
+    }
 }
