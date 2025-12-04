@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>의료진 목록</h2>
+
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th>
+    <th>아이디</th>
+    <th>이름</th>
+    <th>전공</th>
+    <th>전화</th>
+    <th>이메일</th>
+    <th>권한</th>
+    <th>관리</th>
+  </tr>
+
+  <tr th:each="staff : ${staffList}">
+    <td th:text="${staff.medicalNum}"></td>
+    <td th:text="${staff.medicalId}"></td>
+    <td th:text="${staff.mname}"></td>
+    <td th:text="${staff.specialty}"></td>
+    <td th:text="${staff.mphone}"></td>
+    <td th:text="${staff.email}"></td>
+    <td th:text="${staff.power}"></td>
+
+    <td>
+      <a th:if="${session.loginDoctor.medicalNum == staff.medicalNum }" th:href="@{/staff/edit/{medicalNum}(medicalNum=${staff.medicalNum})}">수정</a>
+
+      <!-- 관리자 이상만 버튼 보이기 -->
+      <a th:if="${session.loginDoctor.power >= 2}"
+         th:href="@{/staff/authority/{medicalNum}(medicalNum=${staff.medicalNum})}">
+        권한
+      </a>
+
+      <form th:if="${session.loginDoctor.power == 3}"
+            th:action="@{/staff/delete/{medicalNum}(medicalNum=${staff.medicalNum})}"
+            method="post"
+            style="display:inline;">
+        <button type="submit">삭제</button>
+      </form>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
