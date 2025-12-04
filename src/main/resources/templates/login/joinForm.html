@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="form-container">
+    <h2>🏥 신규 의료진 계정 등록</h2>
+
+    <form th:action="@{/staff/join}" method="post" th:object="${MedicalStaffDto}">
+
+        <div class="form-group">
+            <label for="medicalId" class="required">사용자 ID (로그인 ID):</label>
+            <input type="text" id="medicalId" name="medicalId"
+                   placeholder="영문/숫자 5~30자" required maxlength="30" >
+        </div>
+
+        <div class="form-group">
+            <label for="pwd" class="required">비밀번호:</label>
+            <input type="password" id="pwd" name="pwd"
+                   placeholder="비밀번호를 입력하세요" required>
+        </div>
+
+        <div class="form-group">
+            <label for="mName" class="required">성명:</label>
+            <input type="text" id="mName" name="mName"
+                   placeholder="성명을 입력하세요" required maxlength="20">
+        </div>
+
+        <div class="form-group">
+            <label for="specialty" class="required">직종/부서 (Specialty):</label>
+            <select id="specialty" name="specialty" required>
+                <option value="">-- 직종/부서 선택 --</option>
+                <option value="내과">내과</option>
+                <option value="정형외과">정형외과</option>
+                <option value="간호사">간호사</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="mPhone" class="required">연락처:</label>
+            <input type="text" id="mPhone" name="mPhone"
+                   placeholder="010-0000-0000" required maxlength="15">
+        </div>
+
+        <div class="form-group">
+            <label for="email" class="required">이메일:</label>
+            <input type="email" id="email" name="email"
+                   placeholder="user@hospital.com" required maxlength="40">
+        </div>
+
+        <div class="form-group">
+            <label for="power" class="required"></label>
+            <select id="power" name="power" required>
+                <option value="1">1 (간호사)</option>
+                <option value="2">2 (의사)</option>
+            </select>
+        </div>
+        <button type="submit">회원가입</button>
+    </form>
+</div>
+</body>
+</html>
