@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>환자 상세 정보</title></head>
+<body>
+    <h1>환자 상세 정보</h1>
+    
+    <ul>
+        <li>차트번호: <span th:text="${patient.patient_num}"></span></li>
+        <li>이름: <strong th:text="${patient.name}"></strong></li>
+        <li>연락처: <span th:text="${patient.phone}"></span></li>
+        <li>생년월일: <span th:text="${#temporals.format(patient.birth_date, 'yyyy-MM-dd')}"></span></li>
+        <li>성별: <span th:text="${patient.gender.description}"></span></li>
+        <li>가입일: <span th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}"></span></li>
+    </ul>
+
+    <div>
+        <button th:onclick="|location.href='@{/patients/{id}/edit(id=${patient.patient_num})}'|">정보 수정</button>
+        
+        <form th:action="@{/patients/{id}/delete(id=${patient.patient_num})}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">환자 삭제</button>
+        </form>
+        
+        <a href="/patients">목록으로</a>
+    </div>
+
+    <hr>
+</body>
+</html>

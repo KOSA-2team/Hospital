@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>환자 정보 수정</title></head>
+<body>
+    <h1>환자 정보 수정</h1>
+    <form th:action="@{/patients/{id}/edit(id=${patient.patient_num})}" method="post">
+        <p>이름: <input type="text" name="name" th:value="${patient.name}" required></p>
+        <p>연락처: <input type="text" name="phone" th:value="${patient.phone}"></p>
+        <p>생년월일: <input type="date" name="birth_date" th:value="${patient.birth_date}" required></p>
+        <p>성별: 
+            <select name="gender">
+                <option value="UNKNOWN" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).UNKNOWN}">알 수 없음</option>
+                <option value="MALE" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).MALE}">남성</option>
+                <option value="FEMALE" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).FEMALE}">여성</option>
+            </select>
+        </p>
+        
+        <button type="submit">수정 완료</button>
+        <a th:href="@{/patients/{id}(id=${patient.patient_num})}">취소</a>
+    </form>
+</body>
+</html>

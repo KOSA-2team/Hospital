@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>환자 목록</title></head>
+<body>
+    <h1>환자 관리</h1>
+    <div th:if="${param.error} == 'hasReservations'" style="color: red; font-weight: bold;">
+        해당 환자에게 예약이 있어 삭제할 수 없습니다. 예약을 먼저 취소하거나 삭제하세요.
+    </div>
+    
+    <form action="/patients" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="이름 또는 주민번호(생년월일)">
+        <button type="submit">검색</button>
+    </form>
+    
+    <a href="/patients/new">[ + 신규 환자 등록 ]</a>
+    <hr>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>환자번호</th><th>이름</th><th>연락처</th><th>생년월일</th><th>성별</th><th>가입일</th><th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${list}">
+                <td th:text="${p.patient_num}"></td>
+                <td>
+                    <a th:href="@{/patients/{id}(id=${p.patient_num})}" th:text="${p.name}"></a>
+                </td>
+                <td th:text="${p.phone}"></td>
+                <td th:text="${#temporals.format(p.birth_date, 'yyyy-MM-dd')}"></td>
+                <td th:text="${p.gender.description}"></td>
+                <td th:text="${#temporals.format(p.created_at, 'yyyy-MM-dd HH:mm')}"></td>
+                <td>
+                     <a th:href="@{/patients/{id}/edit(id=${p.patient_num})}">수정</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
