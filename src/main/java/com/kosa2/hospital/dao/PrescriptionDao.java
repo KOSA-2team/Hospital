@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// 처방전 전체 목록 조회
 @Repository
 public class PrescriptionDao {
 
@@ -17,7 +16,7 @@ public class PrescriptionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 전체 목록 조회
+    // 처방전 전체 목록 조회
     public List<PrescriptionDto> findAll() {
         String sql = """
             SELECT p.prescription_num, p.medication_name, p.duration_days, p.dosage, p.treatment_num
