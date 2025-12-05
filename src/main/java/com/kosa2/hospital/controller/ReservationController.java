@@ -1,17 +1,17 @@
 package com.kosa2.hospital.controller;
 
+import com.kosa2.hospital.dto.PatientDto;
 import com.kosa2.hospital.dto.ReservationDto;
-import com.kosa2.hospital.service.MedicalStaffService; // ✨ 팀원이 만든 서비스 임포트
-import com.kosa2.hospital.service.ReservationService;
 import com.kosa2.hospital.model.MedicalStaff;
+import com.kosa2.hospital.service.MedicalStaffService;
+import com.kosa2.hospital.service.PatientService;
+import com.kosa2.hospital.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/reservations")
@@ -20,8 +20,7 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final MedicalStaffService medicalStaffService;
-
-    // private final PatientService patientService;
+    private final PatientService patientService;
 
     // 1. 예약 목록 조회
     @GetMapping
@@ -33,10 +32,8 @@ public class ReservationController {
     // 2. 예약 등록 폼
     @GetMapping("/new")
     public String form(Model model) {
-        List<Map<String, Object>> dummyPatients = new ArrayList<>();
-        dummyPatients.add(Map.of("patientNum", 1L, "name", "임시환자_김철수"));
-        dummyPatients.add(Map.of("patientNum", 2L, "name", "임시환자_이영희"));
-        model.addAttribute("patients", dummyPatients);
+        List<PatientDto> realPatients = patientService.getPatientList(null);
+        model.addAttribute("patients", realPatients);
 
         List<MedicalStaff> realDoctors = medicalStaffService.findAll();
         model.addAttribute("doctors", realDoctors);

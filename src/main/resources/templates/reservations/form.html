@@ -30,8 +30,8 @@
         <select id="patientNum" name="patientNum" required>
             <option value="">-- 환자를 선택하세요 --</option>
             <option th:each="p : ${patients}"
-                    th:value="${p.patientNum}"
-                    th:text="${p.name}">홍길동</option>
+                    th:value="${p.patient_num}"
+                    th:text="|${p.name} (${p.phone})|">홍길동 (010-1234-5678)</option>
         </select>
 
         <label for="medicalNum">담당 의사 선택</label>
