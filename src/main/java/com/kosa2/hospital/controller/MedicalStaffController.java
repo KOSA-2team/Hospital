@@ -65,7 +65,7 @@ public class MedicalStaffController {
     @PostMapping("/edit")
     public String edit(@ModelAttribute("staffDto") MedicalStaffDto dto) {
         medicalStaffService.updateProfile(dto);
-        return "redirect:/doctors?edited=true";
+        return "redirect:/doctors?edit?edited";
     }
 
     // 권한 변경 폼 (관리자만, 인터셉터에서 막힘)
@@ -94,11 +94,15 @@ public class MedicalStaffController {
     // 삭제 (관리자만, 인터셉터 + 컨트롤러 이중 방어)
     @PostMapping("/{medicalNum}/delete")
     public String delete(@PathVariable Long medicalNum, HttpSession session) {
-        MedicalStaff login = (MedicalStaff) session.getAttribute(LOGIN_STAFF_SESSION_KEY);
-        if (login == null || login.getPower() <= Grade.ADMIN) {
+
+
+        MedicalStaff loginDoctors = (MedicalStaff) session.getAttribute(LOGIN_STAFF_SESSION_KEY);
+
+        if (loginDoctors == null || loginDoctors.getPower() != Grade.SYS) {
             return "redirect:/doctors?error=forbidden";
         }
         medicalStaffService.delete(medicalNum);
+
         return "redirect:/doctors";
     }
 }

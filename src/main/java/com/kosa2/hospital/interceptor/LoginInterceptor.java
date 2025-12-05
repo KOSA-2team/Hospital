@@ -9,7 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
-    public static final String LOGIN_STAFF_SESSION_KEY = "LOGIN_STAFF";
+    public static final String LOGIN_STAFF_SESSION_KEY = "loginDoctor";
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -29,9 +29,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // 2. 관리자 이상만 허용할 URL
         boolean adminOnly =
-                requestURI.startsWith("/staff/delete") ||
-                        requestURI.startsWith("/staff/authority") ||
-                        requestURI.startsWith("/admin");
+                requestURI.startsWith("/doctors/{medicalNum}/delete") ||
+                        requestURI.startsWith("/doctors/{medicalNum}/authority");
 
         if (adminOnly && staff.getPower() < Grade.ADMIN) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자만 접근 가능합니다.");
