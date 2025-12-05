@@ -20,7 +20,7 @@ public class ReservationService {
         return reservationDao.findAll();
     }
 
-    // 중복 검사 후 저장
+    // 예약 저장
     @Transactional
     public void createReservation(ReservationDto dto) {
         // 1. 해당 의사가 그 시간에 예약이 있는지 확인
@@ -31,8 +31,14 @@ public class ReservationService {
         reservationDao.save(dto);
     }
 
-    // 핵심 로직: 예약 취소
+    // 예약 취소
+    @Transactional
     public void cancelReservation(Long id) {
         reservationDao.cancel(id);
+    }
+
+    // 상세 조회
+    public ReservationDto getReservation(Long id) {
+        return reservationDao.findById(id);
     }
 }
