@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>환자 등록</title></head>
+<body>
+    <h1>신규 환자 등록</h1>
+    <form action="/patients/new" method="post">
+        <p>이름: <input type="text" name="name" required></p>
+        <p>연락처: <input type="text" name="phone"></p>
+        <p>생년월일: <input type="date" name="birth_date" required></p>
+        <p>성별: 
+            <select name="gender">
+                <option value="UNKNOWN">알 수 없음</option>
+                <option value="MALE">남성</option>
+                <option value="FEMALE">여성</option>
+            </select>
+        </p>
+        
+        <button type="submit">등록</button>
+        <a href="/patients">취소</a>
+    </form>
+</body>
+</html>
