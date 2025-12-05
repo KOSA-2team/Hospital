@@ -25,65 +25,51 @@
       body {
         font-family: "Pretendard", sans-serif;
         margin: 0;
-        display: flex;
-        height: 100vh;
+        display: block;
+        min-height: 100vh;
         background-color: var(--bg);
         color: var(--text);
       }
 
-      /* 사이드바 */
-      aside {
-        width: var(--sidebar-w);
-        background: linear-gradient(180deg, var(--primary) 0%, #3949ab 100%);
-        color: white;
-        padding: 20px;
+      main > header {
+        width: calc(100% + 80px);
+        margin-left: -40px;
+        margin-right: -40px;
+        padding: 20px 40px;
+        margin-bottom: 30px;
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
 
-      aside h2 {
-        margin: 0 0 30px 0;
-        font-size: 1.3rem;
-        text-align: center;
+      .header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
       }
 
-      .search-box input {
+      .header-actions .search-box {
+        width: 320px;
+      }
+
+      .header-actions .search-box input {
         width: 100%;
         padding: 10px;
-        margin-bottom: 20px;
-        border: none;
+        border: 1px solid #e6e9ee;
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-      }
-      .search-box input::placeholder {
-        color: rgba(255, 255, 255, 0.7);
+        background: white;
+        color: var(--text);
       }
 
-      .menu ul {
-        list-style: none;
-        padding: 0;
-      }
-      .menu a {
-        display: block;
-        padding: 12px;
-        margin-bottom: 5px;
-        color: rgba(255, 255, 255, 0.7);
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: bold;
-      }
-      .menu a:hover,
-      .menu a.active {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
+      .header-actions .search-box input::placeholder {
+        color: #b2bec3;
       }
 
       .quick-btn {
-        display: block;
-        width: 100%;
-        padding: 12px;
-        margin-top: 10px;
+        display: inline-block;
+        padding: 10px 14px;
         border: none;
         border-radius: 8px;
         font-weight: bold;
@@ -99,19 +85,15 @@
 
       /* 메인 */
       main {
-        flex: 1;
         padding: 40px;
         overflow-y: auto;
       }
 
-      header {
-        margin-bottom: 30px;
-      }
-      header h1 {
+      main > header h1 {
         margin: 0;
         color: var(--primary);
       }
-      header p {
+      main > header p {
         color: #636e72;
         margin-top: 5px;
       }
@@ -206,54 +188,53 @@
         border-radius: 10px;
         font-size: 0.8rem;
       }
+
+      /* 메인 컨테이너*/
+      .main-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+        min-height: 600px;
+      }
     </style>
   </head>
   <body>
-    <aside>
-      <h2>2팀 병원 시스템</h2>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-      <div class="search-box">
-        <form action="/search" method="get">
-          <input
-            type="text"
-            name="keyword"
-            placeholder="환자명/의사명 검색..."
-            autocomplete="off"
-          />
-        </form>
-      </div>
-
-      <nav class="menu">
-        <ul>
-          <li><a href="/" class="active">대시보드</a></li>
-          <li><a href="/patient">환자 관리</a></li>
-          <li><a href="/reservation">예약 관리</a></li>
-          <li><a href="/staff">의료진 관리</a></li>
-        </ul>
-      </nav>
-
-      <div style="margin-top: auto">
-        <button
-          class="quick-btn btn-green"
-          onclick="location.href='/patient/register'"
-        >
-          + 환자 등록
-        </button>
-        <button
-          class="quick-btn btn-orange"
-          onclick="location.href='/reservation/register'"
-        >
-          + 예약 하기
-        </button>
-      </div>
-    </aside>
-
-    <main>
+    <main class="main-container">
       <header>
-        <h1>메인 대시보드</h1>
-        <p th:text="${#temporals.format(todayDate, 'yyyy년 MM월 dd일 (E)')}">
-          2025년 12월 03일
-        </p>
+        <div>
+          <h1>메인 대시보드</h1>
+          <p th:text="${#temporals.format(todayDate, 'yyyy년 MM월 dd일 (E)')}">
+            2025년 12월 03일
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-box">
+            <form action="/search" method="get">
+              <input
+                type="text"
+                name="keyword"
+                placeholder="환자명/의사명 검색..."
+                autocomplete="off"
+              />
+            </form>
+          </div>
+
+          <button
+            class="quick-btn btn-green"
+            onclick="location.href='/patient/register'"
+          >
+            + 환자 등록
+          </button>
+          <button
+            class="quick-btn btn-orange"
+            onclick="location.href='/reservation/register'"
+          >
+            + 예약 하기
+          </button>
+        </div>
       </header>
 
       <div class="dashboard-grid">
@@ -359,5 +340,6 @@
         </div>
       </div>
     </main>
+    <div th:replace="layout/footer :: footerFragment"></div>
   </body>
 </html>
