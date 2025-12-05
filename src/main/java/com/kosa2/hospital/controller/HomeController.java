@@ -1,5 +1,4 @@
 package com.kosa2.hospital.controller;
-
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
 
     private final HomeService homeService;
-
     
     // 홈 화면 데이터 조회
     @GetMapping("/")

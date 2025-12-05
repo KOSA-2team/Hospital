@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>의료진 목록</h2>
+
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th>
+    <th>아이디</th>
+    <th>이름</th>
+    <th>전공</th>
+    <th>전화</th>
+    <th>이메일</th>
+    <th>권한</th>
+    <th>관리</th>
+  </tr>
+
+  <tr th:each="staff : ${staffList}">
+    <td th:text="${staff.medicalNum}"></td>
+    <td th:text="${staff.medicalId}"></td>
+    <td th:text="${staff.mname}"></td>
+    <td th:text="${staff.specialty}"></td>
+    <td th:text="${staff.mphone}"></td>
+    <td th:text="${staff.email}"></td>
+    <td th:text="${staff.power}"></td>
+
+    <td>
+        <a th:if="${session.loginDoctor != null
+          and (session.loginDoctor.medicalNum == staff.medicalNum
+               or session.loginDoctor.power == 3)}"
+           th:href="@{/doctors/{medicalNum}/edit(medicalNum=${staff.medicalNum})}">
+            수정
+        </a>
+
+<!--        권한 버튼: power == 3 (SYS) 만 -->
+        <a th:if="${session.loginDoctor != null
+            and session.loginDoctor.power == 3}"
+           th:href="@{/doctors/{medicalNum}/authority(medicalNum=${staff.medicalNum})}">
+            권한
+        </a>
+<!--        삭제 버튼: power == 3 (SYS) 만 -->
+        <form th:if="${session.loginDoctor != null
+               and session.loginDoctor.power == 3}"
+              th:action="@{/doctors/{medicalNum}/delete(medicalNum=${staff.medicalNum})}"
+              method="post"
+              style="display:inline;">
+            <button type="submit">삭제</button>
+        </form>
+    </td>
+      </form>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

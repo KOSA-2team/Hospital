@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>권한 변경</h2>
+
+<form th:action="@{/doctors/authority}" method="post" th:object="${staffDto}">
+
+    <input type="hidden" th:field="*{medicalNum}">
+    <input type="hidden" th:field="*{medicalId}">
+
+    <p>의료진: <span th:text="${staff.mname}"></span></p>
+
+    <label>권한</label>
+    <select th:field="*{power}">
+        <option value="1">1 - Normal</option>
+        <option value="2">2 - Admin</option>
+        <option value="3">3 - Sys</option>
+    </select>
+    <br/><br/>
+
+    <button type="submit">권한 변경</button>
+</form>
+
+</body>
+</html>
