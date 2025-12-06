@@ -12,17 +12,15 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new LoginCheckInterceptor())
                 .order(1)
-                .addPathPatterns("/**")           // 전체 경로에 대해 인터셉터 적용
-                .excludePathPatterns(             // 예외(로그인 필요 없는 경로)
+                .addPathPatterns("/**") // 전체 경로에 대해 인터셉터 적용
+                .excludePathPatterns( // 예외(로그인 필요 없는 경로)
                         "/login",
-                        "/",
                         "/doctors/new",
                         "/new",
                         "/logout",
                         "/css/**",
                         "/js/**",
                         "/images/**",
-                        "/error"
-                );
+                        "/error");
     }
 }

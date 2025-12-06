@@ -1,158 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
+    <meta charset="UTF-8">
     <title>KOSA 병원 로그인</title>
-    <style>
-        /* 전체 폰트 및 배경 설정 */
-        body {
-            font-family: 'Arial', 'Malgun Gothic', sans-serif;
-            background-color: #f4f7f9; /* 은은한 배경색 */
-            display: flex; /* 컨테이너 중앙 정렬을 위해 flex 사용 */
-            flex-direction: column; /* 세로 정렬 */
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        /* 로그인 컨테이너 스타일 */
-        .login-container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
-            width: 100%;
-            max-width: 380px; /* 폼 너비 제한 */
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        /* 제목 스타일 */
-        .login-container h2 {
-            color: #004d99; /* 진한 파란색 */
-            margin-bottom: 30px;
-            font-weight: 700;
-            font-size: 1.6em;
-            border-bottom: 2px solid #007bff; /* 제목 아래 구분선 */
-            padding-bottom: 10px;
-        }
-
-        /* 폼 그룹 (아이디/비번) */
-        .login-container form {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        /* 레이블 스타일 */
-        .login-container label {
-            display: block;
-            margin-bottom: 5px;
-            margin-top: 15px;
-            color: #333333;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-
-        /* 입력 필드 스타일 */
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        .login-container input:focus {
-            border-color: #007bff;
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        /* 로그인 버튼 스타일 */
-        .login-container button[type="submit"] {
-            width: 100%;
-            background-color: #007bff; /* ERP 메인 블루 */
-            color: white;
-            padding: 12px 15px;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-
-        .login-container button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        /* 회원가입 버튼 스타일 */
-        .login-container form:last-of-type button[type="submit"] {
-            background-color: #6c757d; /* 회색 계열 */
-            padding: 10px 15px;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-
-        .login-container form:last-of-type button[type="submit"]:hover {
-            background-color: #5a6268;
-        }
-
-        /* 에러 메시지 스타일 */
-        .login-container .error-message {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .login-container .error-message p {
-            color: #ff0000; /* 진한 빨간색 텍스트 */
-            margin: 0;
-            font-size: 0.9em;
-        }
-        /* 줄바꿈 태그 제거 (CSS 레이아웃으로 대체) */
-        br {
-            display: none;
-        }
-
-        /* 푸터 스타일 (자리만 잡기) */
-        div[th:replace*="footerFragment"] {
-            color: #999999;
-            font-size: 0.8em;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
 
 <body>
-<div class="login-container">
-    <h2 style="text-align: center;">KOSA 병원 로그인</h2>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-    <form th:action="@{/login}" method="post">
-        <label for="medicalId">아이디</label>
-        <input type="text" id="medicalId" name="medicalId" th:value="${loginDto.medicalId}">
+    <main class="main-layout layout-center p-0">
+        <div class="card" style="width: 100%; max-width: 400px; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 class="text-primary" style="margin-bottom: 10px; font-size: 1.8em;">KOSA 병원 로그인</h2>
+                <p class="text-muted">병원 ERP 시스템 접속</p>
+            </div>
 
-        <label for="pwd">비밀번호</label>
-        <input type="password" id="pwd" name="pwd" th:value="${loginDto.pwd}">
+            <form th:action="@{/login}" method="post" class="flex flex-col gap-4">
+                <div>
+                    <label for="medicalId" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">아이디</label>
+                    <input type="text" id="medicalId" name="medicalId" th:value="${loginDto.medicalId}"
+                        class="form-input" placeholder="아이디 입력">
+                </div>
 
-        <button type="submit">로그인</button>
-    </form>
-    <form th:action="@{/doctors/new}" method="get">
-        <button type="submit">회원가입</button>
-    </form>
+                <div>
+                    <label for="pwd" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">비밀번호</label>
+                    <input type="password" id="pwd" name="pwd" th:value="${loginDto.pwd}" class="form-input"
+                        placeholder="비밀번호 입력">
+                </div>
 
-    <div class="error-message" th:if="${param.error}">
-        <p>아이디 또는 비밀번호가 잘못되었습니다.</p>
-    </div>
+                <!-- 에러 메시지 -->
+                <div class="card"
+                    style="background-color: #fff5f5; border-color: #feb2b2; padding: 10px; margin-top: 10px;"
+                    th:if="${param.error}">
+                    <p style="color: #c53030; font-size: 0.9em; margin: 0; text-align: center;">아이디 또는 비밀번호가 잘못되었습니다.
+                    </p>
+                </div>
 
-</div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px; width: 100%;">로그인</button>
+            </form>
 
-<div th:replace="layout/footer :: footerFragment"></div>
+            <div style="margin-top: 20px; text-align: center; border-top: 1px solid var(--border); padding-top: 20px;">
+                <p class="text-muted" style="font-size: 0.9em; margin-bottom: 10px;">아직 계정이 없으신가요?</p>
+                <form th:action="@{/doctors/new}" method="get">
+                    <button type="submit" class="btn btn-outline btn-sm" style="width: 100%;">의료진 회원가입</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="layout/footer :: footerFragment"></div>
 </body>
+
 </html>

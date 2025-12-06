@@ -1,41 +1,94 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>환자 목록</title></head>
-<body>
-    <h1>환자 관리</h1>
-    <div th:if="${param.error} == 'hasReservations'" style="color: red; font-weight: bold;">
-        해당 환자에게 예약이 있어 삭제할 수 없습니다. 예약을 먼저 취소하거나 삭제하세요.
-    </div>
-    
-    <form action="/patients" method="get">
-        <input type="text" name="keyword" th:value="${keyword}" placeholder="이름 또는 주민번호(생년월일)">
-        <button type="submit">검색</button>
-    </form>
-    
-    <a href="/patients/new">[ + 신규 환자 등록 ]</a>
-    <hr>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>환자번호</th><th>이름</th><th>연락처</th><th>생년월일</th><th>성별</th><th>가입일</th><th>관리</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="p : ${list}">
-                <td th:text="${p.patient_num}"></td>
-                <td>
-                    <a th:href="@{/patients/{id}(id=${p.patient_num})}" th:text="${p.name}"></a>
-                </td>
-                <td th:text="${p.phone}"></td>
-                <td th:text="${#temporals.format(p.birth_date, 'yyyy-MM-dd')}"></td>
-                <td th:text="${p.gender.description}"></td>
-                <td th:text="${#temporals.format(p.created_at, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                     <a th:href="@{/patients/{id}/edit(id=${p.patient_num})}">수정</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<head>
+    <meta charset="UTF-8">
+    <title>환자 목록</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+</head>
+
+<body>
+    <div th:replace="layout/header :: headerFragment"></div>
+
+    <main class="main-layout">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">환자 관리</h1>
+                <p class="page-subtitle">등록된 환자 목록 조회 및 관리</p>
+            </div>
+            <a href="/patients/new" class="btn btn-primary">
+                + 신규 환자 등록
+            </a>
+        </div>
+
+        <!-- 에러 알림: 예약이 있는 환자 삭제 불가 -->
+        <div th:if="${param.error} == 'hasReservations'" class="card"
+            style="background-color: #fff5f5; border-color: #feb2b2; margin-bottom: 20px; padding: 15px;">
+            <div style="color: #c53030; font-weight: 600;">
+                ⚠️ 해당 환자에게 예약이 있어 삭제할 수 없습니다. 예약을 먼저 취소하거나 삭제하세요.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flex justify-between items-center mb-4" style="margin-bottom: 20px;">
+                <div class="text-muted" style="font-size: 0.9em;">
+                    총 <span th:text="${#lists.size(list)}" style="font-weight: bold; color: var(--primary);">0</span>명의
+                    환자가 있습니다.
+                </div>
+
+                <form action="/patients" method="get" class="flex gap-2">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="이름 또는 전화번호" class="form-input"
+                        style="width: 250px;">
+                    <button type="submit" class="btn btn-secondary">검색</button>
+                </form>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th width="10%">번호</th>
+                            <th width="15%">이름</th>
+                            <th width="20%">연락처</th>
+                            <th width="15%">생년월일</th>
+                            <th width="10%">성별</th>
+                            <th width="15%">가입일</th>
+                            <th width="15%">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(list)}">
+                            <td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                                등록된 환자가 없습니다.
+                            </td>
+                        </tr>
+                        <tr th:each="p : ${list}">
+                            <td th:text="${p.patient_num}"></td>
+                            <td>
+                                <a th:href="@{/patients/{id}(id=${p.patient_num})}" th:text="${p.name}"
+                                    class="text-primary" style="font-weight: 600;"></a>
+                            </td>
+                            <td th:text="${p.phone}"></td>
+                            <td th:text="${#temporals.format(p.birth_date, 'yyyy-MM-dd')}"></td>
+                            <td>
+                                <span class="badge"
+                                    th:classappend="${p.gender.description == '남성'} ? 'badge-blue' : 'badge-gray'"
+                                    th:text="${p.gender.description}">
+                                </span>
+                            </td>
+                            <td th:text="${#temporals.format(p.created_at, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td>
+                                <a th:href="@{/patients/{id}/edit(id=${p.patient_num})}"
+                                    class="btn btn-sm btn-outline">수정</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="layout/footer :: footerFragment"></div>
 </body>
+
 </html>

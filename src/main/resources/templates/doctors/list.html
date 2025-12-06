@@ -1,236 +1,95 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>직원 목록</title>
-    <style>
-        /* 전체적인 폰트와 배경 설정 */
-        body {
-            font-family: 'Arial', 'Malgun Gothic', sans-serif;
-            background-color: #f4f7f9;
-            margin: 20px;
-            padding: 0;
-        }
-
-        /* 테이블 컨테이너 스타일 */
-        table {
-            /* 🚨 수정: 화면 너비의 90%를 차지하도록 설정 */
-            width: 90%;
-            border-collapse: collapse;
-            margin: 25px auto; /* 중앙 정렬 유지 */
-            font-size: 0.9em;
-            min-width: 800px; /* 최소 너비 유지 */
-            max-width: 1200px; /* 최대 너비 제한 */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        /* 테이블 헤더 스타일 (컬러, 폰트 굵기) */
-        th {
-            background-color: #007bff;
-            color: #ffffff;
-            text-align: center;
-            padding: 12px 15px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border: none;
-        }
-
-        /* 테이블 셀 스타일 */
-        td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #dddddd;
-            color: #333333;
-            line-height: 1.4;
-            text-align: center;
-        }
-
-        /* 예외: 마지막 관리 셀은 왼쪽 정렬 유지 (버튼이 모여 보이도록) */
-        td:last-child {
-            text-align: center;
-            white-space: nowrap;
-        }
-
-
-        /* 마우스 오버 시 스타일 (가독성 향상) */
-        tr:hover {
-            background-color: #f1f8ff;
-            transition: background-color 0.2s ease;
-        }
-
-        /* 마지막 행의 하단 테두리 제거 */
-        tr:last-of-type td {
-            border-bottom: none;
-        }
-
-        /* 링크 및 버튼 공통 스타일 */
-        a, button {
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            margin-right: 5px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 500;
-            display: inline-block;
-            border: 1px solid transparent;
-            vertical-align: middle;
-        }
-
-        /* 수정 버튼 스타일 */
-        .btn-edit {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-edit:hover {
-            background-color: #218838;
-        }
-
-        /* 권한 버튼 스타일 */
-        .btn-authority {
-            background-color: #ffc107;
-            color: #333333;
-            border-color: #ffc107;
-        }
-        .btn-authority:hover {
-            background-color: #e0a800;
-        }
-
-        /* 권한 표시 셀을 링크처럼 보이게 */
-        td.authority-link a {
-            padding: 0;
-            margin: 0;
-            background: none;
-            color: #007bff;
-            text-decoration: underline;
-            font-weight: bold;
-        }
-        td.authority-link a:hover {
-            color: #0056b3;
-        }
-
-
-        /* 삭제 버튼 */
-        button[type="delete"] {
-            background-color: #dc3545;
-            color: white;
-            border-color: #dc3545;
-            padding: 6px 10px;
-        }
-        button[type="delete"]:hover {
-            background-color: #c82333;
-        }
-
-        /* 검색 컨테이너 스타일 */
-        .search-container {
-            width: 90%;
-            margin: 0px auto 20px auto; /* 테이블 위쪽 중앙 정렬 */
-            max-width: 1200px;
-            min-width: 800px;
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .search-form {
-            display: flex;
-            justify-content: flex-end; /* 오른쪽 정렬 */
-            align-items: center;
-        }
-
-        .search-input {
-            padding: 10px 15px;
-            border: 1px solid #ced4da;
-            border-radius: 4px 0 0 4px; /* 왼쪽만 둥글게 */
-            font-size: 1em;
-            flex-grow: 1; /* 최대한 공간 차지 */
-            max-width: 300px; /* 검색창 최대 너비 제한 */
-        }
-
-        .search-button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: 1px solid #007bff;
-            border-radius: 0 4px 4px 0; /* 오른쪽만 둥글게 */
-            font-size: 1em;
-            cursor: pointer;
-            margin-right: 0; /* 기존 버튼 마진 제거 */
-        }
-
-        .search-button:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>의료진 및 직원 목록</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
+
 <body>
-<div th:replace="layout/header :: headerFragment"></div>
-<div class="search-container">
-    <form th:action="@{/doctors/Dsearch}" method="get" class="search-form">
-        <input type="text"
-               name="mname"
-               placeholder="이름으로 검색..."
-               th:value="${param.mname}"
-               class="search-input"/>
-        <button type="submit" class="search-button">검색</button>
-    </form>
-</div>
-<table border="1" cellpadding="6">
-    <tr>
-        <th>ID</th>
-        <th>아이디</th>
-        <th>이름</th>
-        <th>전공</th>
-        <th>전화</th>
-        <th>이메일</th>
-        <th th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}"
-            th:text="권한"></th>
-        <th>관리</th>
-    </tr>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-    <tr th:each="staff : ${staffList}">
-        <td th:text="${staff.medicalNum}"></td>
-        <td th:text="${staff.medicalId}"></td>
-        <td th:text="${staff.mname}"></td>
-        <td th:text="${staff.specialty}"></td>
-        <td th:text="${staff.mphone}"></td>
-        <td th:text="${staff.email}"></td>
-        <td th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}"
-            th:text="${staff.power}">
-        </td>
+    <main class="main-layout">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">의료진 관리</h1>
+                <p class="page-subtitle">병원 내부 의료진 및 직원 계정 관리</p>
+            </div>
+        </div>
 
+        <div class="card">
+            <!-- 검색 폼 -->
+            <div class="flex justify-end mb-4" style="margin-bottom: 20px;">
+                <form th:action="@{/doctors/Dsearch}" method="get" class="flex gap-2">
+                    <input type="text" name="mname" placeholder="이름으로 검색..." th:value="${param.mname}"
+                        class="form-input" style="width: 250px;" />
+                    <button type="submit" class="btn btn-secondary">검색</button>
+                </form>
+            </div>
 
-        <td>
-            <a th:if="${session.loginDoctor != null
-          and (session.loginDoctor.medicalNum == staff.medicalNum
-               or session.loginDoctor.power == 3)}"
-               th:href="@{/doctors/{medicalNum}/edit(medicalNum=${staff.medicalNum})}"
-               class="btn-edit">
-                수정
-            </a>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>전공</th>
+                            <th>전화</th>
+                            <th>이메일</th>
+                            <th th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}">권한</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="staff : ${staffList}">
+                            <td th:text="${staff.medicalNum}"></td>
+                            <td th:text="${staff.medicalId}"></td>
+                            <td th:text="${staff.mname}" style="font-weight: 600;"></td>
+                            <td>
+                                <span class="badge badge-gray" th:text="${staff.specialty}"></span>
+                            </td>
+                            <td th:text="${staff.mphone}"></td>
+                            <td th:text="${staff.email}"></td>
+                            <td th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}">
+                                <span class="badge"
+                                    th:classappend="${staff.power == 3} ? 'badge-blue' : (${staff.power == 2} ? 'badge-green' : 'badge-gray')"
+                                    th:text="${staff.power}">
+                                </span>
+                            </td>
+                            <td>
+                                <div class="flex gap-2 justify-center">
+                                    <!-- 본인 또는 최고 관리자만 수정 가능 -->
+                                    <a th:if="${session.loginDoctor != null and (session.loginDoctor.medicalNum == staff.medicalNum or session.loginDoctor.power == 3)}"
+                                        th:href="@{/doctors/{medicalNum}/edit(medicalNum=${staff.medicalNum})}"
+                                        class="btn btn-sm btn-outline">
+                                        수정
+                                    </a>
 
-            <a th:if="${session.loginDoctor != null
-            and session.loginDoctor.power == 3}"
-               th:href="@{/doctors/{medicalNum}/authority(medicalNum=${staff.medicalNum})}"
-               class="btn-authority">
-                권한
-            </a>
+                                    <a th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}"
+                                        th:href="@{/doctors/{medicalNum}/authority(medicalNum=${staff.medicalNum})}"
+                                        class="btn btn-sm btn-accent" style="color: white; border: none;">
+                                        권한
+                                    </a>
 
-            <form th:if="${session.loginDoctor != null
-               and session.loginDoctor.power == 3}"
-                  th:action="@{/doctors/{medicalNum}/delete(medicalNum=${staff.medicalNum})}"
-                  method="post"
-                  style="display:inline;">
-                <button type="delete">삭제</button>
-            </form>
-        </td>
-    </tr>
-</table>
+                                    <form th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}"
+                                        th:action="@{/doctors/{medicalNum}/delete(medicalNum=${staff.medicalNum})}"
+                                        method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-<div th:replace="layout/footer :: footerFragment"></div>
+    <div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
+
 </html>

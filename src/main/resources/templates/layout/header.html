@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
 
@@ -7,102 +8,42 @@
 </head>
 
 <header th:fragment="headerFragment">
-    <style>
-        /* 1. 네비게이션 바 전체 틀 */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 30px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #ddd;
-        }
-
-        /* 2. 로고 스타일 */
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #000000;
-            text-decoration: none;
-        }
-
-        /* 3. 메뉴 리스트 */
-        .menu-list {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 30px;
-        }
-
-        /* 4. 메뉴 링크 */
-        .menu-list a {
-            text-decoration: none;
-            color: #333333;
-            font-size: 16px;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        /* 마우스 올렸을 때  */
-        .menu-list a:hover {
-            color: #000000;
-            text-decoration: underline;
-        }
-
-        /* 5. 사용자 정보 및 버튼 영역 */
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        /* 6. 로그아웃/로그인 버튼 */
-        .btn-auth {
-            text-decoration: none;
-            color: #333333;
-            font-weight: bold;
-            padding: 5px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .btn-auth:hover {
-            background-color: #f0f0f0;
-            color: #000000;
-            border-color: #999;
-        }
-    </style>
-
     <nav class="navbar">
-        <a href="/" class="logo">KOSA 병원</a>
+        <a href="/" class="logo">
+            <!-- SVG Icon for Hospital Logo -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 8V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            KOSA 병원
+        </a>
 
-        <ul class="menu-list">
-            <li><a href="/">대시보드</a></li>
-            <li><a href="/doctors">의료진 정보</a></li>
-            <li><a href="/reservations">예약 관리</a></li>
-            <li><a href="/patients">환자 관리</a></li>
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item">대시보드</a></li>
+            <li><a href="/doctors" class="nav-item">의료진 정보</a></li>
+            <li><a href="/reservations" class="nav-item">예약 관리</a></li>
+            <li><a href="/patients" class="nav-item">환자 관리</a></li>
         </ul>
 
-        <div class="user-info">
-
+        <div class="user-info flex items-center gap-4">
             <th:block th:if="${session.loginDoctor != null}">
-                <span th:text="|${session.loginDoctor.mname}님|"></span>
-
+                <span class="text-primary font-weight-bold" th:text="|${session.loginDoctor.mname}님|"></span>
                 <form action="/logout" method="post" style="display:inline;">
-                    <button type="submit" class="btn-auth" style="cursor:pointer;">로그아웃</button>
+                    <button type="submit" class="btn btn-sm btn-outline">로그아웃</button>
                 </form>
             </th:block>
 
             <!-- 로그인 안 됐을 때 -->
             <th:block th:unless="${session.loginDoctor != null}">
-                <a href="/login" class="btn-auth">로그인</a>
+                <a href="/login" class="btn btn-sm btn-primary">로그인</a>
             </th:block>
-
         </div>
     </nav>
 </header>
+
 </html>

@@ -1,106 +1,141 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>환자 상세 정보</title>
-    <style>
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f8f9fa; }
-
-        .btn-action { padding: 5px 10px; text-decoration: none; border-radius: 4px; color: white; font-size: 14px; }
-        .btn-create { background-color: #007bff; } /* 파란색: 작성 */
-        .btn-view { background-color: #6c757d; }   /* 회색: 조회 */
-        .btn-edit { background-color: #ffc107; color: black; } /* 노란색: 수정 */
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
+
 <body>
 
-<div th:replace="layout/header :: headerFragment"></div>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-<main class="container">
-    <h1>환자 상세 정보</h1>
+    <main class="main-layout">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">환자 상세 정보</h1>
+                <p class="page-subtitle" th:text="|차트번호: ${patient.patient_num}|">차트번호: 1001</p>
+            </div>
+            <div class="flex gap-2">
+                <a href="/patients" class="btn btn-outline">목록으로</a>
+                <a th:href="@{/patients/{id}/edit(id=${patient.patient_num})}" class="btn btn-primary">정보 수정</a>
+            </div>
+        </div>
 
-    <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-        <li>차트번호: <span th:text="${patient.patient_num}"></span></li>
-        <li>이름: <strong th:text="${patient.name}"></strong></li>
-        <li>연락처: <span th:text="${patient.phone}"></span></li>
-        <li>생년월일: <span th:text="${#temporals.format(patient.birth_date, 'yyyy-MM-dd')}"></span></li>
-        <li>성별: <span th:text="${patient.gender.description}"></span></li>
-        <li>가입일: <span th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}"></span></li>
-    </div>
+        <!-- 환자 기본 정보 카드 -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="card-header">
+                <h3 class="card-title">기본 정보</h3>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <span class="text-muted" style="font-size: 0.9em;">이름</span>
+                    <div style="font-size: 1.1em; font-weight: 600;" th:text="${patient.name}">홍길동</div>
+                </div>
+                <div>
+                    <span class="text-muted" style="font-size: 0.9em;">연락처</span>
+                    <div th:text="${patient.phone}">010-1234-5678</div>
+                </div>
+                <div>
+                    <span class="text-muted" style="font-size: 0.9em;">성별</span>
+                    <div th:text="${patient.gender.description}">남성</div>
+                </div>
+                <div>
+                    <span class="text-muted" style="font-size: 0.9em;">생년월일</span>
+                    <div th:text="${#temporals.format(patient.birth_date, 'yyyy-MM-dd')}">1990-01-01</div>
+                </div>
+                <div>
+                    <span class="text-muted" style="font-size: 0.9em;">가입일</span>
+                    <div th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</div>
+                </div>
+            </div>
+        </div>
 
-    <hr>
+        <!-- 예약 내역 섹션 -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="card-header">
+                <h3 class="card-title">예약 내역 <span class="text-muted"
+                        style="font-weight: normal; font-size: 0.8em; margin-left: 8px;">(진료 대기 중인 항목)</span></h3>
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>예약일시</th>
+                            <th>담당의</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(reservations)}">
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">예약 내역이
+                                없습니다.</td>
+                        </tr>
+                        <tr th:each="res : ${reservations}">
+                            <td th:text="${#temporals.format(res.reservationDate, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td th:text="${res.doctorName}"></td>
+                            <td>
+                                <span class="badge badge-gray" th:text="${res.statusDescription}"></span>
+                            </td>
+                            <td>
+                                <!-- 상태에 따른 처리 -->
+                                <a th:if="${res.status == 1}"
+                                    th:href="@{/records/new(reservationNum=${res.reservationNum})}"
+                                    class="btn btn-sm btn-primary">
+                                    진료 차트 작성
+                                </a>
 
-    <h3>예약 내역 (진료 대기)</h3>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>예약일시</th>
-            <th>담당의</th>
-            <th>상태</th>
-            <th>관리 (진료 시작)</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(reservations)}">
-            <td colspan="4">예약 내역이 없습니다.</td>
-        </tr>
-        <tr th:each="res : ${reservations}">
-            <td th:text="${#temporals.format(res.reservationDate, 'yyyy-MM-dd HH:mm')}"></td>
-            <td th:text="${res.doctorName}"></td>
-            <td><span th:text="${res.statusDescription}"></span></td>
-            <td>
-                <!--진료 대기 상태일 경우에만 표시-->
-                <a th:if="${res.status == 1}"
-                   th:href="@{/records/new(reservationNum=${res.reservationNum})}"
-                   class="btn-action btn-create">
-                    🩺 진료 차트 작성
-                </a>
+                                <span th:if="${res.status == 3}" class="badge badge-green">진료 완료</span>
+                                <span th:if="${res.status == 0}" class="badge badge-yellow"
+                                    style="background:#fffaf0; color:#d69e2e;">승인 대기</span>
+                                <span th:if="${res.status == 2}" class="badge badge-gray">취소됨</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                <span th:if="${res.status == 3}" style="color: green; font-weight: bold;">진료 완료</span>
-                <span th:if="${res.status == 0}" style="color: orange;">승인 대기</span>
-                <span th:if="${res.status == 2}" style="color: gray;">취소됨</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <!-- 과거 진료 이력 섹션 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">과거 진료 이력</h3>
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>진료일</th>
+                            <th>진단명</th>
+                            <th>담당의</th>
+                            <th>상세보기</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(historyList)}">
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">과거 진료
+                                기록이 없습니다.</td>
+                        </tr>
+                        <tr th:each="hist : ${historyList}">
+                            <td th:text="${#temporals.format(hist.treatmentDate, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${hist.diagnosis}" style="font-weight: 500;"></td>
+                            <td th:text="${hist.doctorName}"></td>
+                            <td>
+                                <a th:href="@{/records/{id}(id=${hist.treatmentNum})}" class="btn btn-sm btn-outline">
+                                    상세 보기
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-    <hr>
-
-    <h3>과거 진료 이력</h3>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>진료일</th>
-            <th>진단명</th>
-            <th>담당의</th>
-            <th>상세보기</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(historyList)}">
-            <td colspan="4">과거 진료 기록이 없습니다.</td>
-        </tr>
-        <tr th:each="hist : ${historyList}">
-            <td th:text="${#temporals.format(hist.treatmentDate, 'yyyy-MM-dd')}"></td>
-            <td th:text="${hist.diagnosis}"></td>
-            <td th:text="${hist.doctorName}"></td>
-            <td>
-                <a th:href="@{/records/{id}(id=${hist.treatmentNum})}" class="btn-action btn-view">
-                    상세 보기
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <br>
-    <a href="/patients">환자 목록으로 돌아가기</a>
-</main>
-
-<div th:replace="layout/footer :: footerFragment"></div>
+    <div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
+
 </html>

@@ -1,22 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>환자 정보 수정</title></head>
+
+<head>
+    <meta charset="UTF-8">
+    <title>환자 정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+</head>
+
 <body>
-    <h1>환자 정보 수정</h1>
-    <form th:action="@{/patients/{id}/edit(id=${patient.patient_num})}" method="post">
-        <p>이름: <input type="text" name="name" th:value="${patient.name}" required></p>
-        <p>연락처: <input type="text" name="phone" th:value="${patient.phone}"></p>
-        <p>생년월일: <input type="date" name="birth_date" th:value="${patient.birth_date}" required></p>
-        <p>성별: 
-            <select name="gender">
-                <option value="UNKNOWN" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).UNKNOWN}">알 수 없음</option>
-                <option value="MALE" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).MALE}">남성</option>
-                <option value="FEMALE" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).FEMALE}">여성</option>
-            </select>
-        </p>
-        
-        <button type="submit">수정 완료</button>
-        <a th:href="@{/patients/{id}(id=${patient.patient_num})}">취소</a>
-    </form>
+    <div th:replace="layout/header :: headerFragment"></div>
+
+    <main class="main-layout flex items-center justify-center p-0" style="min-height: 80vh;">
+        <div class="card" style="width: 100%; max-width: 500px; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 class="text-primary" style="margin-bottom: 10px; font-size: 1.8em;">환자 정보 수정</h1>
+                <p class="text-muted">환자의 기본 정보를 수정합니다.</p>
+            </div>
+
+            <form th:action="@{/patients/{id}/edit(id=${patient.patient_num})}" method="post"
+                class="flex flex-col gap-4">
+                <div>
+                    <label class="text-muted" style="font-weight: 600; display: block; margin-bottom: 6px;">이름</label>
+                    <input type="text" name="name" th:value="${patient.name}" required class="form-input">
+                </div>
+
+                <div>
+                    <label class="text-muted" style="font-weight: 600; display: block; margin-bottom: 6px;">연락처</label>
+                    <input type="text" name="phone" th:value="${patient.phone}" class="form-input">
+                </div>
+
+                <div>
+                    <label class="text-muted" style="font-weight: 600; display: block; margin-bottom: 6px;">생년월일</label>
+                    <input type="date" name="birth_date" th:value="${patient.birth_date}" required class="form-input">
+                </div>
+
+                <div>
+                    <label class="text-muted" style="font-weight: 600; display: block; margin-bottom: 6px;">성별</label>
+                    <select name="gender" class="form-input">
+                        <option value="UNKNOWN"
+                            th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).UNKNOWN}">알 수 없음
+                        </option>
+                        <option value="MALE" th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).MALE}">
+                            남성</option>
+                        <option value="FEMALE"
+                            th:selected="${patient.gender == T(com.kosa2.hospital.enums.Gender).FEMALE}">여성</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-2" style="margin-top: 20px;">
+                    <a th:href="@{/patients/{id}(id=${patient.patient_num})}" class="btn btn-outline"
+                        style="flex: 1; text-align: center;">취소</a>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">수정 완료</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div th:replace="layout/footer :: footerFragment"></div>
 </body>
+
 </html>

@@ -16,7 +16,6 @@ public class LoginController {
 
     private final LoginService loginService;
 
-
     @GetMapping("/login")
     public String loginForm(Model model) {
 
@@ -26,8 +25,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@RequestParam String medicalId,
-                        @RequestParam String pwd,
-                        HttpServletRequest request) {
+            @RequestParam String pwd,
+            HttpServletRequest request) {
 
         MedicalStaff loginDoctor = loginService.login(medicalId, pwd);
         if (loginDoctor == null) {
@@ -49,6 +48,6 @@ public class LoginController {
         if (session != null) {
             session.invalidate();
         }
-        return "redirect:/login/loginForm";
+        return "redirect:/login";
     }
 }
