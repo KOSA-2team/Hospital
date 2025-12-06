@@ -1,11 +1,17 @@
 package com.kosa2.hospital.controller;
 
+import com.kosa2.hospital.dao.TreatmentDao;
 import com.kosa2.hospital.dto.PatientDto;
+import com.kosa2.hospital.dto.ReservationDto;
+import com.kosa2.hospital.dto.TreatmentHistoryDto;
 import com.kosa2.hospital.service.PatientService;
+import com.kosa2.hospital.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/patients")
@@ -13,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class PatientController {
 
     private final PatientService patientService;
+    private final ReservationService reservationService; // ✨ 위로 올렸습니다.
+    private final TreatmentDao treatmentDao;
 
     // 목록
     @GetMapping
@@ -25,7 +33,17 @@ public class PatientController {
     // 상세
     @GetMapping("/{id}")
     public String details(@PathVariable int id, Model model) {
+        // 환자 정보
         model.addAttribute("patient", patientService.getPatientDetail(id));
+
+        // 예약 내역 가져오기 (int -> Long 형변환)
+        List<ReservationDto> reservations = reservationService.getReservationsByPatient((long) id);
+        model.addAttribute("reservations", reservations);
+
+        // [추가] 과거 진료 기록 (History) 가져오기
+        List<TreatmentHistoryDto> historyList = treatmentDao.findHistoryByPatientNum((long) id);
+        model.addAttribute("historyList", historyList);
+
         return "patients/detail";
     }
 
@@ -39,7 +57,7 @@ public class PatientController {
     @PostMapping("/new")
     public String insert(PatientDto dto) {
         patientService.registerPatient(dto);
-        return "redirect:/patients"; // 경로 수정: /patients/ -> /patients
+        return "redirect:/patients";
     }
 
     // 수정 폼
@@ -63,4 +81,5 @@ public class PatientController {
         patientService.deletePatient(id);
         return "redirect:/patients";
     }
+
 }

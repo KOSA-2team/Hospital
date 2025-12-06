@@ -1,5 +1,20 @@
 -- 실행 Cmd + Enter
 
+-- 1. FK 체크 해제 (삭제 시 제약조건 에러 방지)
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 2. 기존 테이블 삭제 (초기화)
+DROP TABLE IF EXISTS prescription;
+DROP TABLE IF EXISTS treatment;
+DROP TABLE IF EXISTS reservation;
+DROP TABLE IF EXISTS patient;
+DROP TABLE IF EXISTS medical_staff;
+
+-- 3. FK 체크 다시 설정
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------
+
 -- 1. 데이터베이스(방)가 없으면 만들어라! (이게 핵심)
 CREATE DATABASE IF NOT EXISTS hospital_db;
 
