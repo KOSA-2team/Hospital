@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>진료 차트 작성</title>
+    <style>
+        .container { max-width: 800px; margin: 30px auto; padding: 20px; border: 1px solid #ccc; }
+        .row { display: flex; gap: 10px; margin-bottom: 10px; }
+        label { display: block; font-weight: bold; margin-top: 15px; }
+        input, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        .btn-submit { width: 100%; padding: 10px; margin-top: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<!--/patients/{id} 에서 환자에 대한 진료 날짜 클릭 시 /reservations/{id}/record로 연결 현재 form.html 표시-->
+<!--해당 form에서는 진료 기록에 대한 내용만 첨부 detail에서 처방전에 관한 내용 확인 가능-->
+<div th:replace="layout/header :: headerFragment"></div>
+
+<main class="container">
+    <h2>🩺 진료 차트 작성</h2>
+
+    <div style="border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 20px;">
+        <h3>환자 정보</h3>
+        <p><strong>환자명:</strong> <span th:text="${reservation.patientName}"></span></p>
+        <p><strong>담당의:</strong> <span th:text="${reservation.doctorName}"></span></p>
+    </div>
+
+    <form action="/records/new" method="post" th:object="${recordFormDto}">
+        <input type="hidden" th:field="*{reservationNum}">
+
+        <label>진단명 (Diagnosis)</label>
+        <input type="text" th:field="*{diagnosis}" required placeholder="진단명을 입력하세요">
+
+        <label>치료 내용 (Treatment)</label>
+        <textarea th:field="*{treatment}" rows="5" required placeholder="상세 치료 내용을 입력하세요"></textarea>
+
+        <hr>
+        <h3>💊 약 처방 (Prescription)</h3>
+        <div class="prescription-area">
+            <div class="row">
+                <strong style="flex: 2;">약품명</strong>
+                <strong style="flex: 2;">복용법</strong>
+                <strong style="flex: 1;">일수</strong>
+            </div>
+
+            <div class="row" th:each="i : ${#numbers.sequence(0, 2)}">
+                <input type="text" th:field="*{prescriptions[__${i}__].medicationName}" style="flex: 2;" placeholder="약품명">
+                <input type="text" th:field="*{prescriptions[__${i}__].dosage}" style="flex: 2;" placeholder="예: 식후 30분">
+                <input type="number" th:field="*{prescriptions[__${i}__].durationDays}" style="flex: 1;" value="3">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">진료 기록 저장</button>
+    </form>
+</main>
+
+<div th:replace="layout/footer :: footerFragment"></div>
+
+</body>
+</html>
