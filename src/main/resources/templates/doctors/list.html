@@ -121,11 +121,63 @@
         button[type="delete"]:hover {
             background-color: #c82333;
         }
+
+        /* 검색 컨테이너 스타일 */
+        .search-container {
+            width: 90%;
+            margin: 0px auto 20px auto; /* 테이블 위쪽 중앙 정렬 */
+            max-width: 1200px;
+            min-width: 800px;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: flex-end; /* 오른쪽 정렬 */
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px 0 0 4px; /* 왼쪽만 둥글게 */
+            font-size: 1em;
+            flex-grow: 1; /* 최대한 공간 차지 */
+            max-width: 300px; /* 검색창 최대 너비 제한 */
+        }
+
+        .search-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: 1px solid #007bff;
+            border-radius: 0 4px 4px 0; /* 오른쪽만 둥글게 */
+            font-size: 1em;
+            cursor: pointer;
+            margin-right: 0; /* 기존 버튼 마진 제거 */
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
     </style>
 </head>
 <body>
 <div th:replace="layout/header :: headerFragment"></div>
-
+<div class="search-container">
+    <form th:action="@{/doctors/Dsearch}" method="get" class="search-form">
+        <input type="text"
+               name="mname"
+               placeholder="이름으로 검색..."
+               th:value="${param.mname}"
+               class="search-input"/>
+        <button type="submit" class="search-button">검색</button>
+    </form>
+</div>
 <table border="1" cellpadding="6">
     <tr>
         <th>ID</th>

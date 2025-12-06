@@ -105,6 +105,21 @@ public class MedicalStaffController {
 
         return "redirect:/doctors";
     }
+
+    // 의료진 검색
+    @GetMapping("/Dsearch")
+    public String listMedicalStaff(@RequestParam(value = "mname", required = false) String searchName, Model model) {
+        List<MedicalStaff> staffList;
+        if (searchName != null && !searchName.trim().isEmpty()) {
+            staffList = medicalStaffService.findByMnameContaining(searchName.trim());
+        } else {
+            staffList = medicalStaffService.findAll();
+        }
+
+        model.addAttribute("staffList", staffList);
+
+        return "doctors/list";
+    }
 }
 
 
