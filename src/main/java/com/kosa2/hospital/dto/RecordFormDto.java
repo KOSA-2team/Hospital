@@ -15,7 +15,7 @@ import java.util.List;
 public class RecordFormDto {
 
     // 처방전 목록 (PrescriptionDto를 여러 개 담을 수 있는 리스트)
-    private List<Prescription> prescriptions;
+    private List<PrescriptionDto> prescriptions;
 
     private Long treatmentNum; //PK : 진료 번호
     private Long reservationNum; // FK : 예약 번호 (reservation 테이블로부터 참조)

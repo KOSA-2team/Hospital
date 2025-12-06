@@ -99,4 +99,10 @@ public class ReservationDao {
             return dto;
         }, id);
     }
+
+    // [추가] 예약 상태 변경 (진료 완료 처리 등)
+    public void updateStatus(Long reservationNum, int status) {
+        String sql = "UPDATE Reservation SET status = ? WHERE reservation_num = ?";
+        jdbcTemplate.update(sql, status, reservationNum);
+    }
 }

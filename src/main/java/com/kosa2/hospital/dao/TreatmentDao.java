@@ -1,10 +1,14 @@
 package com.kosa2.hospital.dao;
 
 import com.kosa2.hospital.dto.RecordFormDto;
+import com.kosa2.hospital.model.Treatment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 @Repository
 public class TreatmentDao {
@@ -15,26 +19,41 @@ public class TreatmentDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 진료 기록 전체 목록 조회
-    public List<RecordFormDto> findAll() {
+    // 진료기록 INSERT (PK 반환)
+    public Long insert(Treatment treatment) {
+        String sql = "INSERT INTO treatment (reservation_num, diagnosis, treatment, treatment_date) VALUES (?, ?, ?, NOW())";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, treatment.getReservationNum());
+            ps.setString(2, treatment.getDiagnosis());
+            ps.setString(3, treatment.getTreatment());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
+    }
+
+    // 진료 기록 1개 조회 - PK(treatmentNum)
+    public RecordFormDto findById(Long treatmentNum) {
         String sql = """
             SELECT t.treatment_num, t.diagnosis, t.treatment, t.treatment_date, t.reservation_num
             FROM Treatment t
-            JOIN reservation r ON t.reservation_num = r.reservation_num
-            ORDER BY t.treatment_num ASC
+            WHERE t.treatment_num = ?
         """;
-
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            return RecordFormDto.builder()
-                    // DB에서 꺼낸 값을 바로 조립
-                    .treatmentNum(rs.getLong("treatment_num"))
-                    .diagnosis(rs.getString("diagnosis"))
-                    .treatment(rs.getString("treatment"))
-                    .treatmentDate(rs.getTimestamp("treatement_date").toLocalDateTime())
-                    .reservationNum(rs.getLong("reservation_num"))
-                    .build();
-
-        });
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> RecordFormDto.builder()
+                .treatmentNum(rs.getLong("treatment_num"))
+                .diagnosis(rs.getString("diagnosis"))
+                .treatment(rs.getString("treatment"))
+                .treatmentDate(rs.getTimestamp("treatment_date").toLocalDateTime())
+                .reservationNum(rs.getLong("reservation_num"))
+                .build(), treatmentNum);
     }
 
+    // 진료 기록 수정
+    public void update(Treatment t) {
+        String sql = "UPDATE treatment SET diagnosis = ?, treatment = ? WHERE treatment_num = ?";
+        jdbcTemplate.update(sql, t.getDiagnosis(), t.getTreatment(), t.getTreatmentNum());
+    }
 }

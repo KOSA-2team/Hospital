@@ -1,7 +1,6 @@
 package com.kosa2.hospital.dao;
 
-import com.kosa2.hospital.dto.PrescriptionDto;
-import com.kosa2.hospital.dto.RecordFormDto;
+import com.kosa2.hospital.model.Prescription;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,24 +15,27 @@ public class PrescriptionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 처방전 전체 목록 조회
-    public List<PrescriptionDto> findAll() {
-        String sql = """
-            SELECT p.prescription_num, p.medication_name, p.duration_days, p.dosage, p.treatment_num
-            FROM Prescription p
-            JOIN treatment t ON p.treatment_num = t.treatment_num
-            ORDER BY p.prescription_num ASC
-        """;
+    // 처방전 INSERT
+    public void insert(Prescription p) {
+        String sql = "INSERT INTO prescription (treatment_num, medication_name, dosage, duration_days) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, p.getTreatmentNum(), p.getMedicationName(), p.getDosage(), p.getDurationDays());
+    }
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            return PrescriptionDto.builder()
-                    // DB에서 꺼낸 값을 바로 조립
-                    .prescriptionNum(rs.getLong("prescription_num"))
-                    .medicationName(rs.getString("medication_name"))
-                    .durationDays(rs.getInt("duration_days"))
-                    .dosage(rs.getString("dosage"))
-                    .treatmentNum(rs.getLong(("treatment_num")))
-                    .build();
-        });
+    // 특정 진료(treatmentNum)에 연결된 처방전 리스트 조회
+    public List<Prescription> findByTreatmentId(Long treatmentNum) {
+        String sql = "SELECT * FROM prescription WHERE treatment_num = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> Prescription.builder()
+                .prescriptionNum(rs.getLong("prescription_num"))
+                .treatmentNum(rs.getLong("treatment_num"))
+                .medicationName(rs.getString("medication_name"))
+                .dosage(rs.getString("dosage"))
+                .durationDays(rs.getInt("duration_days"))
+                .build(), treatmentNum);
+    }
+
+    // 기존 처방전 삭제(DELETE)
+    public void deleteByTreatmentId(Long treatmentNum) {
+        String sql = "DELETE FROM prescription WHERE treatment_num = ?";
+        jdbcTemplate.update(sql, treatmentNum);
     }
 }
