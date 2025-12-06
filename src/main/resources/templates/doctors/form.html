@@ -1,184 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>직원 목록</title>
-    <style>
-        /* 전체적인 폰트와 배경 설정 */
-        body {
-            font-family: 'Arial', 'Malgun Gothic', sans-serif;
-            background-color: #f4f7f9;
-            margin: 20px;
-            padding: 0;
-        }
-
-        /* 테이블 컨테이너 스타일 */
-        table {
-            /* 🚨 수정: 화면 너비의 90%를 차지하도록 설정 */
-            width: 90%;
-            border-collapse: collapse;
-            margin: 25px auto; /* 중앙 정렬 유지 */
-            font-size: 0.9em;
-            min-width: 800px; /* 최소 너비 유지 */
-            max-width: 1200px; /* 최대 너비 제한 */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        /* 테이블 헤더 스타일 (컬러, 폰트 굵기) */
-        th {
-            background-color: #007bff;
-            color: #ffffff;
-            text-align: center;
-            padding: 12px 15px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border: none;
-        }
-
-        /* 테이블 셀 스타일 */
-        td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #dddddd;
-            color: #333333;
-            line-height: 1.4;
-            text-align: center;
-        }
-
-        /* 예외: 마지막 관리 셀은 왼쪽 정렬 유지 (버튼이 모여 보이도록) */
-        td:last-child {
-            text-align: center;
-            white-space: nowrap;
-        }
-
-
-        /* 마우스 오버 시 스타일 (가독성 향상) */
-        tr:hover {
-            background-color: #f1f8ff;
-            transition: background-color 0.2s ease;
-        }
-
-        /* 마지막 행의 하단 테두리 제거 */
-        tr:last-of-type td {
-            border-bottom: none;
-        }
-
-        /* 링크 및 버튼 공통 스타일 */
-        a, button {
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            margin-right: 5px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 500;
-            display: inline-block;
-            border: 1px solid transparent;
-            vertical-align: middle;
-        }
-
-        /* 수정 버튼 스타일 */
-        .btn-edit {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-edit:hover {
-            background-color: #218838;
-        }
-
-        /* 권한 버튼 스타일 */
-        .btn-authority {
-            background-color: #ffc107;
-            color: #333333;
-            border-color: #ffc107;
-        }
-        .btn-authority:hover {
-            background-color: #e0a800;
-        }
-
-        /* 권한 표시 셀을 링크처럼 보이게 */
-        td.authority-link a {
-            padding: 0;
-            margin: 0;
-            background: none;
-            color: #007bff;
-            text-decoration: underline;
-            font-weight: bold;
-        }
-        td.authority-link a:hover {
-            color: #0056b3;
-        }
-
-
-        /* 삭제 버튼 */
-        button[type="delete"] {
-            background-color: #dc3545;
-            color: white;
-            border-color: #dc3545;
-            padding: 6px 10px;
-        }
-        button[type="delete"]:hover {
-            background-color: #c82333;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>신규 의료진 계정 등록</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
+
 <body>
-<div th:replace="layout/header :: headerFragment"></div>
 
-<table border="1" cellpadding="6">
-    <tr>
-        <th>ID</th>
-        <th>아이디</th>
-        <th>이름</th>
-        <th>전공</th>
-        <th>전화</th>
-        <th>이메일</th>
-        <th th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}"
-            th:text="권한"></th>
-        <th>관리</th>
-    </tr>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-    <tr th:each="staff : ${staffList}">
-        <td th:text="${staff.medicalNum}"></td>
-        <td th:text="${staff.medicalId}"></td>
-        <td th:text="${staff.mname}"></td>
-        <td th:text="${staff.specialty}"></td>
-        <td th:text="${staff.mphone}"></td>
-        <td th:text="${staff.email}"></td>
-        <td th:if="${session.loginDoctor != null and session.loginDoctor.power == 3}"
-            th:text="${staff.power}">
-        </td>
+    <main class="main-layout layout-center p-0">
+        <div class="card" style="width: 100%; max-width: 500px; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 class="text-primary" style="margin-bottom: 10px; font-size: 1.8em;">신규 의료진 계정 등록</h2>
+                <p class="text-muted">병원 의료진 및 직원 계정을 생성합니다.</p>
+            </div>
 
+            <form th:action="@{/doctors/new}" method="post" th:object="${MedicalStaffDto}" class="flex flex-col gap-4">
 
-        <td>
-            <a th:if="${session.loginDoctor != null
-          and (session.loginDoctor.medicalNum == staff.medicalNum
-               or session.loginDoctor.power == 3)}"
-               th:href="@{/doctors/{medicalNum}/edit(medicalNum=${staff.medicalNum})}"
-               class="btn-edit">
-                수정
-            </a>
+                <input type="hidden" th:field="*{power}" value="1">
 
-            <a th:if="${session.loginDoctor != null
-            and session.loginDoctor.power == 3}"
-               th:href="@{/doctors/{medicalNum}/authority(medicalNum=${staff.medicalNum})}"
-               class="btn-authority">
-                권한
-            </a>
+                <div>
+                    <label for="medicalId" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">사용자 ID (로그인 ID):</label>
+                    <input type="text" id="medicalId" th:field="*{medicalId}" placeholder="영문/숫자 5~30자" required
+                        maxlength="30" class="form-input">
+                </div>
 
-            <form th:if="${session.loginDoctor != null
-               and session.loginDoctor.power == 3}"
-                  th:action="@{/doctors/{medicalNum}/delete(medicalNum=${staff.medicalNum})}"
-                  method="post"
-                  style="display:inline;">
-                <button type="delete">삭제</button>
+                <div>
+                    <label for="pwd" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">비밀번호:</label>
+                    <input type="password" id="pwd" th:field="*{pwd}" placeholder="비밀번호를 입력하세요" required
+                        class="form-input">
+                </div>
+
+                <div>
+                    <label for="mName" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">성명:</label>
+                    <input type="text" id="mName" th:field="*{mName}" placeholder="성명을 입력하세요" required maxlength="20"
+                        class="form-input">
+                </div>
+
+                <div>
+                    <label for="specialty" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">직종/부서 (Specialty):</label>
+                    <select id="specialty" th:field="*{specialty}" required class="form-input">
+                        <option value="">-- 직종/부서 선택 --</option>
+                        <option value="내과">내과</option>
+                        <option value="정형외과">정형외과</option>
+                        <option value="간호사">간호사</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="mPhone" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">연락처:</label>
+                    <input type="text" id="mPhone" th:field="*{mPhone}" placeholder="010-0000-0000" required
+                        maxlength="15" class="form-input">
+                </div>
+
+                <div>
+                    <label for="email" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">이메일:</label>
+                    <input type="email" id="email" th:field="*{email}" placeholder="user@hospital.com" required
+                        maxlength="40" class="form-input">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">계정 등록</button>
             </form>
-        </td>
-    </tr>
-</table>
+        </div>
+    </main>
 
-<div th:replace="layout/footer :: footerFragment"></div>
+    <div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
+
 </html>

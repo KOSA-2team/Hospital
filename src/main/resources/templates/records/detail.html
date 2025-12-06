@@ -1,67 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>진료 내역 상세</title>
-    <style>
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; border: 1px solid #ccc; }
-        .section { margin-bottom: 30px; }
-        .label { font-weight: bold; display: inline-block; width: 100px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        .btn-group { text-align: center; margin-top: 30px; }
-        .btn { padding: 8px 16px; text-decoration: none; border: 1px solid #ccc; margin: 0 5px; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
+
 <body>
 
-<!--해당 환자에 대한 처방전 확인 가능-->
-<!--/records/{id}-->
-<div th:replace="layout/header :: headerFragment"></div>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-<main class="container">
-    <h2>📄 진료 내역 상세</h2>
-    <hr>
+    <main class="main-layout">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">진료 내역 상세</h1>
+                <p class="page-subtitle">환자의 진료 기록 및 처방 내역</p>
+            </div>
+        </div>
 
-    <div class="section">
-        <h3>진료 소견</h3>
-        <p><span class="label">진료일:</span> <span th:text="${#temporals.format(record.treatmentDate, 'yyyy-MM-dd HH:mm')}"></span></p>
-        <p><span class="label">진단명:</span> <strong th:text="${record.diagnosis}"></strong></p>
-        <p><span class="label">치료 내용:</span> <span th:text="${record.treatment}"></span></p>
-    </div>
+        <div class="grid" style="grid-template-columns: 1fr; gap: 30px;">
+            <!-- 진료 내용 카드 -->
+            <div class="card">
+                <h3 class="text-primary" style="margin-bottom: 20px; font-size: 1.3em;">진료 소견</h3>
+                <div class="grid grid-2" style="gap: 20px;">
+                    <div>
+                        <span class="text-muted" style="display: block; font-size: 0.9em;">진료일</span>
+                        <strong style="font-size: 1.1em;"
+                            th:text="${#temporals.format(record.treatmentDate, 'yyyy-MM-dd HH:mm')}"></strong>
+                    </div>
+                    <div>
+                        <span class="text-muted" style="display: block; font-size: 0.9em;">진단명</span>
+                        <strong style="font-size: 1.1em; color: var(--accent);" th:text="${record.diagnosis}"></strong>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <span class="text-muted" style="display: block; font-size: 0.9em; margin-bottom: 5px;">치료 내용</span>
+                    <div style="background-color: var(--bg-body); padding: 15px; border-radius: var(--radius-sm);">
+                        <p style="margin: 0; white-space: pre-wrap;" th:text="${record.treatment}"></p>
+                    </div>
+                </div>
+            </div>
 
-    <div class="section">
-        <h3>💊 처방 내역</h3>
+            <div class="card">
+                <h3 class="text-primary" style="margin-bottom: 20px; font-size: 1.3em;">처방 내역</h3>
 
-        <p th:if="${#lists.isEmpty(record.prescriptions)}" style="text-align: center;">처방된 약이 없습니다.</p>
+                <div th:if="${#lists.isEmpty(record.prescriptions)}"
+                    style="text-align: center; padding: 20px; color: var(--text-muted);">
+                    처방된 약이 없습니다.
+                </div>
 
-        <table th:unless="${#lists.isEmpty(record.prescriptions)}">
-            <thead>
-            <tr>
-                <th>No</th>
-                <th>약품명</th>
-                <th>복용법</th>
-                <th>투약 일수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="med, stat : ${record.prescriptions}">
-                <td th:text="${stat.count}">1</td>
-                <td th:text="${med.medicationName}"></td>
-                <td th:text="${med.dosage}"></td>
-                <td th:text="|${med.durationDays}일|"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+                <div class="table-wrapper" th:unless="${#lists.isEmpty(record.prescriptions)}">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="10%">No</th>
+                                <th width="40%">약품명</th>
+                                <th width="30%">복용법</th>
+                                <th width="20%">투약 일수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="med, stat : ${record.prescriptions}">
+                                <td th:text="${stat.count}">1</td>
+                                <td th:text="${med.medicationName}" style="font-weight: 600;"></td>
+                                <td th:text="${med.dosage}"></td>
+                                <td th:text="|${med.durationDays}일|"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <div class="btn-group">
-        <a th:href="@{/records/{id}/edit(id=${record.treatmentNum})}" class="btn">수정</a>
-        <a href="/reservations" class="btn">목록으로</a>
-    </div>
-</main>
+        <div class="flex gap-2 justify-center" style="margin-top: 40px;">
+            <a th:href="@{/records/{id}/edit(id=${record.treatmentNum})}" class="btn btn-secondary">수정</a>
+            <a href="/reservations" class="btn btn-outline">목록으로</a>
+        </div>
+    </main>
 
-<div th:replace="layout/footer :: footerFragment"></div>
+    <div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
+
 </html>

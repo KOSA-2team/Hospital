@@ -1,154 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
+    <meta charset="UTF-8">
     <title>의료진 정보 수정</title>
-    <style>
-        /* 전체적인 폰트와 배경 설정 */
-        body {
-            font-family: 'Arial', 'Malgun Gothic', sans-serif;
-            background-color: #f4f7f9;
-            /* 🚨 수정: body를 세로 정렬 Flex 컨테이너로 설정 */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* 화면 전체 높이를 사용 */
-            margin: 0; /* body 기본 마진 제거 */
-            padding: 0;
-        }
-
-        /* 폼 컨테이너를 감싸는 래퍼 (중앙 정렬 및 푸터 밀어내기 담당) */
-        .main-wrapper {
-            flex-grow: 1; /* 남은 공간을 모두 차지 */
-            display: flex;
-            justify-content: center; /* 가로 중앙 정렬 */
-            align-items: center; /* 세로 중앙 정렬 */
-            padding: 20px 0; /* 상하 패딩 추가 */
-        }
-
-        /* 🚨 헤더 스타일 수정: Padding 축소 */
-        div[th:replace*="headerFragment"] {
-            background-color: #004d99;
-            color: white;
-        /* padding-top과 padding-bottom을 15px에서 10px로 줄였습니다. */
-            padding: 10px ;
-            font-size: 1.3em; /* 글자 크기도 약간 줄였습니다. */
-            font-weight: bold;
-        }
-
-        /* 🚨 푸터 스타일 (예시, 하단 고정) */
-        div[th:replace*="footerFragment"] {
-            padding: 10px;
-            text-align: center;
-            font-size: 0.8em;
-            color: #777;
-            background-color: #e9ecef;
-            width: 100%; /* 너비 100% 확보 */
-        }
-
-        /* 폼 컨테이너 스타일 */
-        form {
-            background-color: #ffffff;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-        }
-
-        h2 {
-            color: #004d99;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 700;
-            font-size: 1.8em;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            margin-top: 15px;
-            color: #333333;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 5px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #007bff;
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        button[type="submit"] {
-            width: 100%;
-            background-color: #007bff;
-            color: white;
-            padding: 12px 15px;
-            margin-top: 30px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
+
 <body>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-<div th:replace="layout/header :: headerFragment"></div>
 
-<div class="main-wrapper">
+    <main class="main-layout flex items-center justify-center p-0" style="min-height: 80vh;">
+        <!-- 수정 완료 알림 -->
+        <script th:if="${param.edited}" th:inline="javascript">
+            alert('수정되었습니다.');
+        </script>
 
-    <script th:if="${param.edited}" th:inline="javascript">
-        alert('수정되었습니다.');
-    </script>
+        <div class="card" style="width: 100%; max-width: 450px; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 class="text-primary" style="margin-bottom: 10px; font-size: 1.8em;">의료진 정보 수정</h2>
+                <p class="text-muted">내 정보 및 비밀번호를 수정합니다.</p>
+            </div>
 
-    <form th:action="@{/doctors/edit}" method="post" th:object="${staffDto}">
+            <form th:action="@{/doctors/edit}" method="post" th:object="${staffDto}" class="flex flex-col gap-4">
+                <input type="hidden" th:field="*{medicalNum}">
 
-        <h2>의료진 정보 수정</h2>
+                <div>
+                    <label for="medicalId" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">아이디</label>
+                    <input type="text" id="medicalId" th:field="*{medicalId}" readonly class="form-input"
+                        style="background-color: var(--bg-hover);">
+                </div>
 
-        <input type="hidden" th:field="*{medicalNum}">
+                <div>
+                    <label for="pwd" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">비밀번호</label>
+                    <input type="password" id="pwd" th:field="*{pwd}" placeholder="변경하려면 새 비밀번호 입력" class="form-input">
+                </div>
 
-        <label for="medicalId">아이디</label>
-        <input type="text" id="medicalId" th:field="*{medicalId}" readonly style="background-color: #e9ecef;">
+                <div>
+                    <label for="mName" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">이름</label>
+                    <input type="text" id="mName" th:field="*{mName}" class="form-input">
+                </div>
 
-        <label for="pwd">비밀번호</label>
-        <input type="password" id="pwd" th:field="*{pwd}" placeholder="변경하려면 새 비밀번호를 입력하세요.">
+                <div>
+                    <label for="specialty" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">전공</label>
+                    <input type="text" id="specialty" th:field="*{specialty}" class="form-input">
+                </div>
 
-        <label for="mName">이름</label>
-        <input type="text" id="mName" th:field="*{mName}">
+                <div>
+                    <label for="mPhone" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">전화</label>
+                    <input type="text" id="mPhone" th:field="*{mPhone}" class="form-input">
+                </div>
 
-        <label for="specialty">전공</label>
-        <input type="text" id="specialty" th:field="*{specialty}">
+                <div>
+                    <label for="email" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">이메일</label>
+                    <input type="text" id="email" th:field="*{email}" class="form-input">
+                </div>
 
-        <label for="mPhone">전화</label>
-        <input type="text" id="mPhone" th:field="*{mPhone}">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">정보 수정 완료</button>
+            </form>
+        </div>
+    </main>
 
-        <label for="email">이메일</label>
-        <input type="text" id="email" th:field="*{email}">
-
-        <button type="submit">정보 수정 완료</button>
-    </form>
-
-</div>
-
-<div th:replace="layout/footer :: footerFragment"></div>
-
+    <div th:replace="layout/footer :: footerFragment"></div>
 </body>
+
 </html>

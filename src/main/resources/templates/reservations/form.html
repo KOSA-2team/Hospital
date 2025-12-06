@@ -1,57 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>예약 등록</title>
-    <style>
-        .main-container { max-width: 600px; margin: 30px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Noto Sans KR', sans-serif;}
-        label { display: block; margin-top: 15px; font-weight: bold; }
-        select, input[type="datetime-local"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; margin-top: 25px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        .error { color: red; font-weight: bold; margin-bottom: 15px; background-color: #ffe6e6; padding: 10px; border-radius: 4px; }
-        .back-link { display: block; margin-top: 15px; text-align: center; text-decoration: none; color: #555; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
 </head>
+
 <body>
 
-<div th:replace="layout/header :: headerFragment"></div>
+    <div th:replace="layout/header :: headerFragment"></div>
 
-<main class="main-container">
-    <h2 style="text-align: center;">🏥 진료 예약 등록</h2>
+    <main class="main-layout layout-center p-0">
+        <div class="card" style="width: 100%; max-width: 600px; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 class="text-primary" style="margin-bottom: 10px; font-size: 1.8em;">진료 예약 등록</h1>
+                <p class="text-muted">환자의 진료를 예약합니다.</p>
+            </div>
 
-    <div th:if="${param.error}" class="error">
-        ⚠️ 이미 해당 시간에 예약이 존재합니다! 다른 시간을 선택해주세요.
-    </div>
+            <div th:if="${param.error}" class="card"
+                style="background-color: #fff5f5; border-color: #feb2b2; margin-bottom: 20px; padding: 15px;">
+                <div style="color: #c53030; font-weight: 600;">
+                    이 미 해당 시간에 예약이 존재합니다! 다른 시간을 선택해주세요.
+                </div>
+            </div>
 
-    <form action="/reservations/new" method="post">
+            <form action="/reservations/new" method="post" class="flex flex-col gap-4">
 
-        <label for="patientNum">환자 선택</label>
-        <select id="patientNum" name="patientNum" required>
-            <option value="">-- 환자를 선택하세요 --</option>
-            <option th:each="p : ${patients}"
-                    th:value="${p.patient_num}"
-                    th:text="|${p.name} (${p.phone})|">홍길동 (010-1234-5678)</option>
-        </select>
+                <div>
+                    <label for="patientNum" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">환자 선택</label>
+                    <select id="patientNum" name="patientNum" required class="form-input">
+                        <option value="">-- 환자를 선택하세요 --</option>
+                        <option th:each="p : ${patients}" th:value="${p.patient_num}"
+                            th:text="|${p.name} (${p.phone})|">홍길동 (010-1234-5678)</option>
+                    </select>
+                </div>
 
-        <label for="medicalNum">담당 의사 선택</label>
-        <select id="medicalNum" name="medicalNum" required>
-            <option value="">-- 의사를 선택하세요 --</option>
-            <option th:each="d : ${doctors}"
-                    th:value="${d.medicalNum}"
-                    th:text="|${d.mname} (${d.specialty})|">김닥터 (내과)</option>
-        </select>
+                <div>
+                    <label for="medicalNum" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">담당 의사 선택</label>
+                    <select id="medicalNum" name="medicalNum" required class="form-input">
+                        <option value="">-- 의사를 선택하세요 --</option>
+                        <option th:each="d : ${doctors}" th:value="${d.medicalNum}"
+                            th:text="|${d.mname} (${d.specialty})|">김닥터 (내과)</option>
+                    </select>
+                </div>
 
-        <label for="reservationDate">예약 일시</label>
-        <input type="datetime-local" id="reservationDate" name="reservationDate" required>
+                <div>
+                    <label for="reservationDate" class="text-muted"
+                        style="font-weight: 600; display: block; margin-bottom: 6px;">예약 일시</label>
+                    <input type="datetime-local" id="reservationDate" name="reservationDate" required
+                        class="form-input">
+                </div>
 
-        <button type="submit">예약 등록하기</button>
-    </form>
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">예약 등록하기</button>
+            </form>
 
-    <a href="/reservations" class="back-link">⬅️ 목록으로 돌아가기</a>
-</main>
+            <a href="/reservations" class="btn btn-outline"
+                style="margin-top: 15px; width: 100%; text-align: center;">목록으로 돌아가기</a>
+        </div>
+    </main>
 
-<div th:replace="layout/footer :: footerFragment"></div>
+    <div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
+
 </html>
