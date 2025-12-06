@@ -4,22 +4,20 @@
     <meta charset="UTF-8">
     <title>예약 상세 정보</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px; }
+        .main-container { max-width: 600px; margin: 30px auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px; font-family: 'Noto Sans KR', sans-serif;}
         h2 { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .info-group { margin-bottom: 15px; }
         .info-label { font-weight: bold; display: inline-block; width: 120px; color: #555; }
         .info-value { display: inline-block; font-size: 1.1em; }
         .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; background-color: gray; }
 
-        /* 상태별 뱃지 색상 */
-        .status-0 { background-color: #28a745; } /* 예약됨 - 초록 */
-        .status-1 { background-color: #17a2b8; } /* 대기중 - 파랑 */
-        .status-2 { background-color: #dc3545; } /* 취소됨 - 빨강 */
-        .status-3 { background-color: #6c757d; } /* 완료됨 - 회색 */
+        .status-0 { background-color: #28a745; }
+        .status-1 { background-color: #17a2b8; }
+        .status-2 { background-color: #dc3545; }
+        .status-3 { background-color: #6c757d; }
 
         .btn-area { margin-top: 30px; text-align: center; }
-        .btn { padding: 10px 20px; text-decoration: none; border-radius: 5px; color: white; border: none; cursor: pointer; font-size: 1em; margin: 5px;}
+        .btn { padding: 8px 16px; text-decoration: none; border-radius: 5px; color: white; border: none; cursor: pointer; font-size: 1em; margin: 5px;}
         .btn-list { background-color: #6c757d; }
         .btn-start { background-color: #007bff; }
         .btn-cancel { background-color: #dc3545; }
@@ -27,8 +25,10 @@
 </head>
 <body>
 
-<div class="container">
-    <h2>예약 상세 정보</h2>
+<div th:replace="layout/header :: headerFragment"></div>
+
+<main class="main-container">
+    <h2>🏥 예약 상세 정보</h2>
 
     <div class="info-group">
         <span class="info-label">예약 번호</span>
@@ -70,8 +70,9 @@
 
         <a href="/reservations" class="btn btn-list">목록으로</a>
     </div>
+</main>
 
-</div>
+<div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
 </html>

@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <title>예약 등록</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        select, input[type="datetime-local"] { width: 100%; padding: 8px; margin-top: 5px; }
-        button { width: 100%; padding: 10px; margin-top: 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        .main-container { max-width: 600px; margin: 30px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Noto Sans KR', sans-serif;}
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        select, input[type="datetime-local"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; margin-top: 25px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
         button:hover { background-color: #0056b3; }
-        .error { color: red; font-weight: bold; margin-bottom: 15px; }
+        .error { color: red; font-weight: bold; margin-bottom: 15px; background-color: #ffe6e6; padding: 10px; border-radius: 4px; }
+        .back-link { display: block; margin-top: 15px; text-align: center; text-decoration: none; color: #555; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>진료 예약 등록</h2>
+<div th:replace="layout/header :: headerFragment"></div>
+
+<main class="main-container">
+    <h2 style="text-align: center;">🏥 진료 예약 등록</h2>
 
     <div th:if="${param.error}" class="error">
-        이미 해당 시간에 예약이 존재합니다! 다른 시간을 선택해주세요.
+        ⚠️ 이미 해당 시간에 예약이 존재합니다! 다른 시간을 선택해주세요.
     </div>
 
     <form action="/reservations/new" method="post">
@@ -28,8 +30,8 @@
         <select id="patientNum" name="patientNum" required>
             <option value="">-- 환자를 선택하세요 --</option>
             <option th:each="p : ${patients}"
-                    th:value="${p.patientNum}"
-                    th:text="${p.name}">홍길동</option>
+                    th:value="${p.patient_num}"
+                    th:text="|${p.name} (${p.phone})|">홍길동 (010-1234-5678)</option>
         </select>
 
         <label for="medicalNum">담당 의사 선택</label>
@@ -37,7 +39,7 @@
             <option value="">-- 의사를 선택하세요 --</option>
             <option th:each="d : ${doctors}"
                     th:value="${d.medicalNum}"
-                    th:text="${d.mname}">김닥터</option>
+                    th:text="|${d.mname} (${d.specialty})|">김닥터 (내과)</option>
         </select>
 
         <label for="reservationDate">예약 일시</label>
@@ -46,9 +48,10 @@
         <button type="submit">예약 등록하기</button>
     </form>
 
-    <br>
-    <a href="/reservations"> 목록으로 돌아가기</a>
-</div>
+    <a href="/reservations" class="back-link">⬅️ 목록으로 돌아가기</a>
+</main>
+
+<div th:replace="layout/footer :: footerFragment"></div>
 
 </body>
 </html>

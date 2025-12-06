@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>권한 변경</title>
+    <style>
+        /* 전체적인 폰트와 배경 설정 */
+        body {
+            font-family: 'Arial', 'Malgun Gothic', sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* 전체 화면 높이 사용 */
+        }
+
+        /* 메인 컨텐츠 영역 (폼 컨테이너를 중앙으로 보내기 위한 설정) */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 폼이 화면 중앙보다 약간 위에 위치하도록 조정 */
+            padding: 40px 20px;
+        }
+
+        /* 폼 컨테이너 스타일 */
+        form {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* 폼 너비 제한 */
+        }
+
+        /* 제목 스타일 */
+        h2 {
+            color: #004d99; /* 진한 파란색 */
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 1.8em;
+        }
+
+        /* 의료진 정보 표시 p 태그 */
+        p {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        /* 레이블 스타일 */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        /* 셀렉트 박스 스타일 */
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+            background-color: white;
+            appearance: none; /* 기본 화살표 제거 */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.1L146.2%20205.9%2018.1%2074.5c-6.8-6.8-17.7-6.8-24.5%200s-6.8%2017.7%200%2024.5l137.9%20138.4a17.6%2017.6%200%200%200%2024.5%200l137.9-138.4c6.9-6.8%206.9-17.7%200-24.5-6.8-6.8-17.7-6.8-24.5%200z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* 제출 버튼 스타일 */
+        button[type="submit"] {
+            width: 100%;
+            background-color: #ffc107; /* 권한 관련 작업을 위해 노란색 계열 강조 */
+            color: #333333;
+            padding: 12px 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            border: 1px solid #e0a800;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #e0a800;
+            color: white;
+        }
+
+        /* 줄바꿈 태그 제거 (CSS 레이아웃으로 대체) */
+        br {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div th:replace="layout/header :: headerFragment"></div>
+
+<div class="main-content">
+    <form th:action="@{/doctors/authority}" method="post" th:object="${staffDto}">
+
+        <h2>권한 변경</h2>
+
+        <input type="hidden" th:field="*{medicalNum}">
+        <input type="hidden" th:field="*{medicalId}">
+
+        <p>의료진: <span th:text="${staffDto.mName}"></span></p>
+
+        <label for="power">권한 선택</label>
+        <select id="power" th:field="*{power}">
+            <option value="1">1 - Normal (일반 의료진)</option>
+            <option value="2">2 - Admin (부서 관리자)</option>
+            <option value="3">3 - Sys (시스템 관리자)</option>
+        </select>
+
+        <button type="submit">권한 변경</button>
+    </form>
+</div>
+
+<div th:replace="layout/footer :: footerFragment"></div>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>신규 의료진 계정 등록</title>
+    <style>
+        /* 전체 폰트 및 배경 설정 */
+        body {
+            font-family: 'Arial', 'Malgun Gothic', sans-serif;
+            background-color: #f4f7f9;
+            display: flex; /* Flexbox 사용 */
+            flex-direction: column; /* 주축을 세로로 설정 */
+            min-height: 100vh; /* 화면 전체 높이를 사용 */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 메인 콘텐츠 영역 (폼 컨테이너를 중앙으로 보내고 푸터를 하단에 고정하기 위한 래퍼) */
+        .main-wrapper {
+            flex-grow: 1; /* 남은 공간을 모두 차지하여 푸터를 밀어냄 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* 폼 컨테이너 스타일 */
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* 제목 스타일 */
+        h2 {
+            color: #004d99;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 1.8em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        /* 폼 그룹 간격 설정 */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        /* 레이블 스타일 */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        /* 필수 항목 표시 */
+        .required::after {
+            content: ' *';
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        /* 입력 필드 및 셀렉트 박스 스타일 */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background-color: #fff;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* Select 박스 화살표 스타일 */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%2D%22292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.1L146.2%20205.9%2018.1%2074.5c-6.8-6.8-17.7-6.8-24.5%200s-6.8%2017.7%200%2024.5l137.9%20138.4a17.6%2017.6%200%200%200%2024.5%200l137.9-138.4c6.9-6.8%206.9-17.7%200-24.5-6.8-6.8-17.7-6.8-24.5%200z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat, repeat;
+            background-position: right 10px top 50%;
+            background-size: 10px auto;
+        }
+
+        /* 회원가입 버튼 스타일 */
+        button[type="submit"] {
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 15px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        /* 푸터 스타일 (하단 고정을 위한 스타일) */
+        div[th:replace*="footerFragment"] {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #777;
+            background-color: #e9ecef;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main-wrapper">
+    <div class="form-container">
+        <h2>🏥 신규 의료진 계정 등록</h2>
+
+        <form th:action="@{/doctors/new}" method="post" th:object="${MedicalStaffDto}">
+
+            <input type="hidden" th:field="*{power}" value="1">
+
+            <div class="form-group">
+                <label for="medicalId" class="required">사용자 ID (로그인 ID):</label>
+                <input type="text" id="medicalId" th:field="*{medicalId}"
+                       placeholder="영문/숫자 5~30자" required maxlength="30" >
+            </div>
+
+            <div class="form-group">
+                <label for="pwd" class="required">비밀번호:</label>
+                <input type="password" id="pwd" th:field="*{pwd}"
+                       placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mName" class="required">성명:</label>
+                <input type="text" id="mName" th:field="*{mName}"
+                       placeholder="성명을 입력하세요" required maxlength="20">
+            </div>
+
+            <div class="form-group">
+                <label for="specialty" class="required">직종/부서 (Specialty):</label>
+                <select id="specialty" th:field="*{specialty}" required>
+                    <option value="">-- 직종/부서 선택 --</option>
+                    <option value="내과">내과</option>
+                    <option value="정형외과">정형외과</option>
+                    <option value="간호사">간호사</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mPhone" class="required">연락처:</label>
+                <input type="text" id="mPhone" th:field="*{mPhone}"
+                       placeholder="010-0000-0000" required maxlength="15">
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="required">이메일:</label>
+                <input type="email" id="email" th:field="*{email}"
+                       placeholder="user@hospital.com" required maxlength="40">
+            </div>
+
+            <button type="submit">계정 등록</button>
+        </form>
+    </div>
+</div>
+
+<div th:replace="layout/footer :: footerFragment"></div>
+
+</body>
+</html>
