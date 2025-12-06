@@ -41,4 +41,9 @@ public class ReservationService {
     public ReservationDto getReservation(Long id) {
         return reservationDao.findById(id);
     }
+
+    // [추가] 환자별 예약 조회
+    public List<ReservationDto> getReservationsByPatient(Long patientNum) {
+        return reservationDao.findByPatientNum(patientNum);
+    }
 }

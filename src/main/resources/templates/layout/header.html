@@ -91,7 +91,7 @@
 
             <th:block th:if="${session.loginDoctor != null}">
                 <span th:text="|${session.loginDoctor.mname}님|"></span>
-              
+
                 <form action="/logout" method="post" style="display:inline;">
                     <button type="submit" class="btn-auth" style="cursor:pointer;">로그아웃</button>
                 </form>

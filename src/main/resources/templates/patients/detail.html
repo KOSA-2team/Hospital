@@ -1,28 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>환자 상세 정보</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>환자 상세 정보</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .btn-action { text-decoration: none; padding: 5px 10px; color: white; border-radius: 4px; }
+        .btn-start { background-color: #007bff; }
+        .btn-view { background-color: #6c757d; }
+    </style>
+</head>
 <body>
-    <h1>환자 상세 정보</h1>
-    
-    <ul>
-        <li>차트번호: <span th:text="${patient.patient_num}"></span></li>
-        <li>이름: <strong th:text="${patient.name}"></strong></li>
-        <li>연락처: <span th:text="${patient.phone}"></span></li>
-        <li>생년월일: <span th:text="${#temporals.format(patient.birth_date, 'yyyy-MM-dd')}"></span></li>
-        <li>성별: <span th:text="${patient.gender.description}"></span></li>
-        <li>가입일: <span th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}"></span></li>
-    </ul>
 
-    <div>
-        <button th:onclick="|location.href='@{/patients/{id}/edit(id=${patient.patient_num})}'|">정보 수정</button>
-        
-        <form th:action="@{/patients/{id}/delete(id=${patient.patient_num})}" method="post" style="display:inline;">
-            <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">환자 삭제</button>
-        </form>
-        
-        <a href="/patients">목록으로</a>
-    </div>
+<h1>환자 상세 정보</h1>
 
-    <hr>
+<ul>
+    <li>차트번호: <span th:text="${patient.patient_num}"></span></li>
+    <li>이름: <strong th:text="${patient.name}"></strong></li>
+    <li>연락처: <span th:text="${patient.phone}"></span></li>
+    <li>생년월일: <span th:text="${#temporals.format(patient.birth_date, 'yyyy-MM-dd')}"></span></li>
+    <li>성별: <span th:text="${patient.gender.description}"></span></li>
+    <li>가입일: <span th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}"></span></li>
+</ul>
+
+<div>
+    <button th:onclick="|location.href='@{/patients/{id}/edit(id=${patient.patient_num})}'|">정보 수정</button>
+
+    <form th:action="@{/patients/{id}/delete(id=${patient.patient_num})}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">환자 삭제</button>
+    </form>
+
+    <a href="/patients">목록으로</a>
+</div>
+
+<hr>
+
+<h3>⏳ 진료 대기 목록 (예약)</h3>
+
+<div th:if="${#lists.isEmpty(reservations)}">
+    <p>예약된 내역이 없습니다.</p>
+</div>
+
+<table th:unless="${#lists.isEmpty(reservations)}">
+    <thead>
+    <tr>
+        <th>예약일시</th>
+        <th>담당의</th>
+        <th>상태</th>
+        <th>관리 (진료)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="res : ${reservations}">
+        <td th:text="${#temporals.format(res.reservationDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${res.doctorName}"></td>
+        <td><span th:text="${res.statusDescription}"></span></td>
+        <td>
+            <a th:if="${res.status == 1}"
+               th:href="@{/records/new(reservationNum=${res.reservationNum})}"
+               class="btn-action btn-start">
+                🩺 진료 차트 작성
+            </a>
+
+            <span th:if="${res.status == 0}">승인 대기</span>
+            <span th:if="${res.status == 3}" style="color: green;">진료 완료</span>
+            <span th:if="${res.status == 2}" style="color: gray;">취소됨</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<h3>과거 진료 기록</h3>
+
+<div th:if="${#lists.isEmpty(historyList)}">
+    <p>과거 진료 기록이 없습니다.</p>
+</div>
+
+<table th:unless="${#lists.isEmpty(historyList)}">
+    <thead>
+    <tr>
+        <th>진료일</th>
+        <th>진단명</th>
+        <th>담당의</th>
+        <th>상세보기</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="hist : ${historyList}">
+        <td th:text="${#temporals.format(hist.treatmentDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${hist.diagnosis}"></td>
+        <td th:text="${hist.doctorName}"></td>
+        <td>
+            <a th:href="@{/records/{id}(id=${hist.treatmentNum})}" class="btn-action btn-view">
+                상세
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
 </body>
 </html>

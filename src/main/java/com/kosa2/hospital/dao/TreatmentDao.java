@@ -1,6 +1,7 @@
 package com.kosa2.hospital.dao;
 
 import com.kosa2.hospital.dto.RecordFormDto;
+import com.kosa2.hospital.dto.TreatmentHistoryDto;
 import com.kosa2.hospital.model.Treatment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class TreatmentDao {
@@ -55,5 +57,24 @@ public class TreatmentDao {
     public void update(Treatment t) {
         String sql = "UPDATE treatment SET diagnosis = ?, treatment = ? WHERE treatment_num = ?";
         jdbcTemplate.update(sql, t.getDiagnosis(), t.getTreatment(), t.getTreatmentNum());
+    }
+
+    // [추가] 특정 환자의 진료 이력 목록 조회
+    public List<TreatmentHistoryDto> findHistoryByPatientNum(Long patientNum) {
+        String sql = """
+            SELECT t.treatment_num, t.treatment_date, t.diagnosis, m.mname
+            FROM Treatment t
+            JOIN Reservation r ON t.reservation_num = r.reservation_num
+            JOIN Medical_Staff m ON r.medical_num = m.medical_num
+            WHERE r.patient_num = ?
+            ORDER BY t.treatment_date DESC
+        """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> TreatmentHistoryDto.builder()
+                .treatmentNum(rs.getLong("treatment_num"))
+                .treatmentDate(rs.getTimestamp("treatment_date").toLocalDateTime())
+                .diagnosis(rs.getString("diagnosis"))
+                .doctorName(rs.getString("mname"))
+                .build(), patientNum);
     }
 }

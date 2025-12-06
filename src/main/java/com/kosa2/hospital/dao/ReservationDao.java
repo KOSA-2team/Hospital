@@ -105,4 +105,31 @@ public class ReservationDao {
         String sql = "UPDATE Reservation SET status = ? WHERE reservation_num = ?";
         jdbcTemplate.update(sql, status, reservationNum);
     }
+
+    // [추가] 특정 환자의 예약 목록 조회
+    public List<ReservationDto> findByPatientNum(Long patientNum) {
+        String sql = """
+        SELECT r.reservation_num, r.reservation, r.status,
+               r.patient_num, r.medical_num,
+               p.name AS patient_name,
+               m.mname AS doctor_name
+        FROM Reservation r
+        JOIN patient p ON r.patient_num = p.patient_num
+        JOIN medical_staff m ON r.medical_num = m.medical_num
+        WHERE r.patient_num = ?  -- 이 환자 것만!
+        ORDER BY r.reservation DESC
+    """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            ReservationDto dto = new ReservationDto();
+            dto.setReservationNum(rs.getLong("reservation_num"));
+            dto.setReservationDate(rs.getTimestamp("reservation").toLocalDateTime());
+            dto.setStatus(rs.getInt("status"));
+            dto.setPatientNum(rs.getLong("patient_num"));
+            dto.setMedicalNum(rs.getLong("medical_num"));
+            dto.setPatientName(rs.getString("patient_name"));
+            dto.setDoctorName(rs.getString("doctor_name"));
+            return dto;
+        }, patientNum);
+    }
 }

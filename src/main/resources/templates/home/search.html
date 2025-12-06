@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <title>검색 결과</title>
-  </head>
-  <body>
-    <h1>검색 결과 페이지</h1>
+</head>
+<body>
+<h1>검색 결과 페이지</h1>
 
-    <p>검색어: <strong th:text="${keyword}" style="color: red"></strong></p>
+<p>검색어: <strong th:text="${keyword}" style="color: red"></strong></p>
 
-    <table border="1">
-      <thead>
-        <tr>
-          <th>예약 ID</th>
-          <th>시간</th>
-          <th>환자명</th>
-          <th>의사명</th>
-          <th>상태</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:if="${searchList == null or #lists.isEmpty(searchList)}">
-          <td colspan="5">검색 결과가 없습니다.</td>
-        </tr>
+<table border="1">
+    <thead>
+    <tr>
+        <th>예약 ID</th>
+        <th>시간</th>
+        <th>환자명</th>
+        <th>의사명</th>
+        <th>상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${searchList == null or #lists.isEmpty(searchList)}">
+        <td colspan="5">검색 결과가 없습니다.</td>
+    </tr>
 
-        <tr th:each="row : ${searchList}">
-          <td th:text="${row.id}"></td>
-          <td th:text="${row.time}"></td>
-          <td th:text="${row.patient_name}"></td>
-          <td th:text="${row.doctor_name}"></td>
-          <td th:text="${row.status}"></td>
-        </tr>
-      </tbody>
-    </table>
+    <tr th:each="row : ${searchList}">
+        <td th:text="${row.id}"></td>
+        <td th:text="${row.time}"></td>
+        <td th:text="${row.patient_name}"></td>
+        <td th:text="${row.doctor_name}"></td>
+        <td th:text="${row.status}"></td>
+    </tr>
+    </tbody>
+</table>
 
-    <br />
-  </body>
+<br />
+</body>
 </html>
