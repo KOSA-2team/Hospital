@@ -40,10 +40,9 @@ public class RecordController {
     }
 
     // 진료 상세 조회
-    // URL: /records/{id}
-    // 진료 내용 + 처방전 리스트 (JOIN 또는 SELECT 2회)
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
+        // 서비스 호출: 진료 정보 + 처방전 리스트를 합쳐서 가져옴
         RecordFormDto record = recordService.getRecordDetail(id);
         model.addAttribute("record", record);
         return "records/detail";
