@@ -20,6 +20,10 @@
             <div class="flex gap-2">
                 <a href="/patients" class="btn btn-outline">목록으로</a>
                 <a th:href="@{/patients/{id}/edit(id=${patient.patient_num})}" class="btn btn-primary">정보 수정</a>
+                <form th:action="@{/patients/{id}/delete(id=${patient.patient_num})}" method="post"
+                    onsubmit="return confirm('정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');" style="display:inline;">
+                    <button type="submit" class="btn" style="background-color: #e53e3e; color: white;">삭제</button>
+                </form>
             </div>
         </div>
 
@@ -47,7 +51,8 @@
                 </div>
                 <div>
                     <span class="text-muted" style="font-size: 0.9em;">가입일</span>
-                    <div th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</div>
+                    <div th:text="${#temporals.format(patient.created_at, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00
+                    </div>
                 </div>
             </div>
         </div>
@@ -70,7 +75,8 @@
                     </thead>
                     <tbody>
                         <tr th:if="${#lists.isEmpty(reservations)}">
-                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">예약 내역이
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">예약
+                                내역이
                                 없습니다.</td>
                         </tr>
                         <tr th:each="res : ${reservations}">
@@ -115,7 +121,8 @@
                     </thead>
                     <tbody>
                         <tr th:if="${#lists.isEmpty(historyList)}">
-                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">과거 진료
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">과거
+                                진료
                                 기록이 없습니다.</td>
                         </tr>
                         <tr th:each="hist : ${historyList}">
